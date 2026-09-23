@@ -14,16 +14,16 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }} # la key
           port: 22 # le port pas default quand ce connect a un serveur
           script: | # on execute un ensemble de script
-            mkdir /opt/application/athl/athl-ms
-  generate-image: #générer mon image et push sur github
-    name: generate image
-    runs-on: ubuntu-latest
-    steps: # les étapes du job
-      - name: cloner le repertoire # étape 1 cloner le projet dans github
-        uses: actions/checkout@develop
-      - name: setup java version
-        uses: action/setup-java@v4
-        with:
-          distribution: 'temurin' #
-          java-version: '17'
+            mkdir /opt/application/athl/athl-back
+  #generate-image: #générer mon image et push sur github
+    #name: generate image
+    #runs-on: ubuntu-latest
+    #steps: # les étapes du job
+      #- name: cloner le repertoire # étape 1 cloner le projet dans github
+        #uses: actions/checkout@develop
+      #- name: setup java version
+        #uses: action/setup-java@v4
+        #with:
+          #distribution: 'temurin' #
+          #java-version: '17'
 
