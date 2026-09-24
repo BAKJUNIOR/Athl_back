@@ -14,7 +14,8 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }} # la key
           port: 22 # le port pas default quand ce connect a un serveur
           script: | # on execute un ensemble de script
-            mkdir -p /opt/application/athl/athl-back
+            mkdir /opt/application/athl/athl-back
+            ls -al /opt/applications/athl
             
 
   generate-image: #générer mon image et push sur github
