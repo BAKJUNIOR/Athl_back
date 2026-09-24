@@ -15,15 +15,25 @@ jobs:
           port: 22 # le port pas default quand ce connect a un serveur
           script: | # on execute un ensemble de script
             mkdir /opt/application/athl/athl-back
-  #generate-image: #générer mon image et push sur github
-    #name: generate image
-    #runs-on: ubuntu-latest
-    #steps: # les étapes du job
-      #- name: cloner le repertoire # étape 1 cloner le projet dans github
-        #uses: actions/checkout@develop
-      #- name: setup java version
-        #uses: action/setup-java@v4
-        #with:
-          #distribution: 'temurin' #
-          #java-version: '17'
+            
+
+  generate-image: #générer mon image et push sur github
+    name: generate image
+    runs-on: ubuntu-latest
+    needs: [ 'create-folder' ]
+    steps: # les étapes du job
+      - name: cloner le repertoire # étape 1 cloner le projet dans github
+        uses: actions/checkout@develop
+      - name: setup java version
+        uses: action/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Generate and push image
+        run: |
+          ./mvnw clean package spring-boot:build-image \
+          -Ddocker.publishRegistry.username=${{secrets.DCK_USERNAME}} \
+          -Ddocker.publishRegistry.password=${{secrets.DCK_PASSWORD}} \
+          -Dspring-boot.build-image.publish=true \
+          -Dmaven.test.skip=true 
 
