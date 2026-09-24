@@ -74,4 +74,6 @@ jobs:
             echo MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" >> /opt/application/athl/${{env.IMAGE}}/.env
             echo MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" >> /opt/application/athl/${{env.IMAGE}}/.env
             docker compose -f /opt/application/athl/${{env.IMAGE}}/compose.yaml up -d
-            rm /opt/application/athl/${{env.IMAGE}}/.env
+            # .env volontairement laissé en place (pas supprimé) : sinon un simple
+            # "docker compose up -d" manuel sur le serveur, hors CI, recrée le conteneur
+            # avec des variables vides et le fait planter.
