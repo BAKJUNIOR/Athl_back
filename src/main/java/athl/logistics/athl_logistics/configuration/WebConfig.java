@@ -12,7 +12,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/api/v1/**")
                 .allowedOrigins(
                         "http://localhost:4200", "http://localhost:4201", "http://localhost:4300", "http://localhost:4301",
-                        "http://athl-logistique.com", "http://www.athl-logistique.com", "http://bo.athl-logistique.com")
+                        "http://athl-logistique.com", "http://www.athl-logistique.com", "http://bo.athl-logistique.com",
+                        "http://site.athl-logistique.com")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
