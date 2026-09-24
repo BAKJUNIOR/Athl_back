@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - develop   # ne se déclenche QUE quand on push sur develop
+env:
+  IMAGE: athl-back
+  VERSION: 0.0.1-SNAPSHOT
 
 jobs:
 
@@ -18,7 +21,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }} # la key
           port: 22 # le port pas default quand ce connect a un serveur
           script: | # on execute un ensemble de script
-            mkdir -p /opt/application/athl/athl-back
+            mkdir -p /opt/application/athl/${{env.IMAGE}}
             ls -al /opt/application/athl
 
   generate-image: # générer mon image et push sur github
@@ -40,3 +43,32 @@ jobs:
           -Ddocker.publishRegistry.password=${{ secrets.DCK_PASSWORD }} \
           -Dspring-boot.build-image.publish=true \
           -Dmaven.test.skip=true
+  run-container:
+    name: run container
+    runs-on: ubuntu-latest
+    needs: [ 'create-folder', 'generate-image' ]
+    steps:
+      - name: cloner le repertoire
+        uses: actions/checkout@v4
+      - name: copy file via ssh key
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          source: "compose.yaml"
+          target: /opt/application/athl/${{env.IMAGE}}
+      - name: execute commands to run container
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo DB_HOST="${{ secrets.DB_HOST }}" > /opt/application/athl/${{env.IMAGE}}/.env
+            echo DB_USERNAME="${{ secrets.DB_USERNAME }}" >> /opt/application/athl/${{env.IMAGE}}/.env
+            echo DB_PASSWORD="${{ secrets.DB_PASSWORD }}" >> /opt/application/athl/${{env.IMAGE}}/.env
+            docker compose -f /opt/application/athl/${{env.IMAGE}}/compose.yaml up -d
+            rm /opt/application/athl/${{env.IMAGE}}/.env

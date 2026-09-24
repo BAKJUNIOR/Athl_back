@@ -1,0 +1,16 @@
+services:
+  athl-back:
+    image: bakjunior58/athl_back:0.0.1-SNAPSHOT
+    container_name: athl_back
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=${DB_HOST}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - JAVA_TOOL_OPTIONS=-Xss200K
+    networks:
+      - applications-network
+networks:
+  applications-network:
+    external: true
+    name: applications-network
