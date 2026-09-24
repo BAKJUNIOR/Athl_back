@@ -69,5 +69,9 @@ jobs:
             echo DB_HOST="${{ secrets.DB_HOST }}" > /opt/application/athl/${{env.IMAGE}}/.env
             echo DB_USERNAME="${{ secrets.DB_USERNAME }}" >> /opt/application/athl/${{env.IMAGE}}/.env
             echo DB_PASSWORD="${{ secrets.DB_PASSWORD }}" >> /opt/application/athl/${{env.IMAGE}}/.env
+            echo MAIL_HOST="${{ secrets.MAIL_HOST }}" >> /opt/application/athl/${{env.IMAGE}}/.env
+            echo MAIL_PORT="${{ secrets.MAIL_PORT }}" >> /opt/application/athl/${{env.IMAGE}}/.env
+            echo MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" >> /opt/application/athl/${{env.IMAGE}}/.env
+            echo MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" >> /opt/application/athl/${{env.IMAGE}}/.env
             docker compose -f /opt/application/athl/${{env.IMAGE}}/compose.yaml up -d
             rm /opt/application/athl/${{env.IMAGE}}/.env
