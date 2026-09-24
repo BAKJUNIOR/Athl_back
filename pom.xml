@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>athl.logistics</groupId>
-    <artifactId>Athl_back</artifactId>
+    <artifactId>athl_back</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Athl_back</name>
-    <description>Athl_back</description>
+    <name>athl_back</name>
+    <description>athl_back</description>
     <url/>
     <licenses>
         <license/>
