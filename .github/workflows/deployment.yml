@@ -8,7 +8,6 @@ env:
   VERSION: 0.0.1-SNAPSHOT
 
 jobs:
-
   create-folder: # crée un répertoire sur le serveur
     name: create folder
     runs-on: ubuntu-latest
