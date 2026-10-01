@@ -23,5 +23,6 @@
     <include file="db/changelog/changes/0009-team-members-quote.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/changes/0010-drop-testimonials-table.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/changes/0011-seed-team-members.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/changes/0012-backfill-team-members-bio.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>
