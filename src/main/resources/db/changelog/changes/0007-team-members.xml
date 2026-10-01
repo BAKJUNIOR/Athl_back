@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!--
+        team_members (voir TeamMember) : bio (fiche détail) + quote/initials (un membre avec une
+        citation apparaît aussi dans le carrousel de témoignages de l'accueil — pas de table
+        "témoignages" séparée). Seed avec le contenu réel déjà en prod si la table est vide, pour
+        que les environnements neufs ne partent pas d'une page Équipe vide.
+    -->
+
+    <changeSet id="add-team-members-bio-quote-columns" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="team_members"/>
+                <not>
+                    <columnExists tableName="team_members" columnName="bio_fr"/>
+                </not>
+            </and>
+        </preConditions>
+        <addColumn tableName="team_members">
+            <column name="bio_fr" type="TEXT"/>
+            <column name="bio_en" type="TEXT"/>
+            <column name="quote_fr" type="TEXT"/>
+            <column name="quote_en" type="TEXT"/>
+            <column name="initials" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Base déjà remplie via le BO avant cet ajout : réattache bio/citation aux 4 membres
+         connus, identifiés par nom, sans écraser une valeur déjà saisie. -->
+    <changeSet id="backfill-team-members-bio-quote" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="team_members"/>
+                <columnExists tableName="team_members" columnName="bio_fr"/>
+            </and>
+        </preConditions>
+        <update tableName="team_members">
+            <column name="quote_fr" value="« De la première visite à la livraison, tout était documenté et dans le budget. Les équipes ont traité le chantier comme le leur. »"/>
+            <column name="quote_en" value="“From the first visit to handover, everything was documented and on budget. The teams treated the site as if it were their own.”"/>
+            <column name="initials" value="EN"/>
+            <column name="bio_fr" value="Emmanuel est le Directeur Général du Groupe ATHL. Il pilote la stratégie globale de l'entreprise et veille à la cohérence des activités de construction, de logistique et d'importation de matériaux portées par les équipes.&#10;&#10;Sous sa direction, ATHL s'est développé en gardant la même exigence sur chaque chantier : respect des délais, maîtrise du budget et accompagnement des clients du premier contact jusqu'à la livraison."/>
+            <column name="bio_en" value="Emmanuel is the Group Chief Executive Officer of ATHL. He drives the company's overall strategy and ensures consistency across its construction, logistics and materials import activities.&#10;&#10;Under his leadership, ATHL has grown while keeping the same rigor on every project: respecting deadlines, managing budgets carefully, and supporting clients from first contact through to handover."/>
+            <where>name LIKE '%GUESSAN%' AND quote_fr IS NULL</where>
+        </update>
+        <update tableName="team_members">
+            <column name="quote_fr" value="« ATHL, c'est une équipe qui tient parole : chaque chantier est mené avec la même exigence, du premier brief à la remise des clés. »"/>
+            <column name="quote_en" value="“ATHL is a team that keeps its word: every project is run with the same rigor, from the first brief to the final handover.”"/>
+            <column name="initials" value="GE"/>
+            <column name="bio_fr" value="Gnohéré est Gérant d'ATHL, en charge de la gestion opérationnelle quotidienne de l'entreprise. Il coordonne les équipes sur le terrain pour garantir que chaque projet avance dans les règles de l'art et dans le respect des engagements pris auprès des clients.&#10;&#10;Il est particulièrement attaché à la qualité d'exécution et à la sécurité sur les chantiers, deux piliers qui guident l'ensemble des interventions d'ATHL."/>
+            <column name="bio_en" value="Gnohéré is the Managing Director of ATHL, responsible for the company's day-to-day operations. He coordinates teams on the ground to ensure every project moves forward to a high standard and in line with commitments made to clients.&#10;&#10;He places particular emphasis on execution quality and site safety, two pillars that guide all of ATHL's work."/>
+            <where>name LIKE '%Gnohéré%' AND quote_fr IS NULL</where>
+        </update>
+        <update tableName="team_members">
+            <column name="quote_fr" value="« ATHL a mené une rénovation complexe avec professionnalisme et précision. Leur souci du détail et leur culture sécurité font vraiment la différence. »"/>
+            <column name="quote_en" value="“ATHL carried out a complex renovation with professionalism and precision. Their attention to detail and safety culture really make the difference.”"/>
+            <column name="initials" value="ET"/>
+            <column name="bio_fr" value="Elisabeth est Responsable Administrative et Comptable chez ATHL. Elle supervise la gestion financière et administrative de l'entreprise, garantissant la rigueur nécessaire au bon fonctionnement de chaque projet.&#10;&#10;Son attention au détail et sa rigueur contribuent directement à la fiabilité d'ATHL vis-à-vis de ses clients et de ses partenaires."/>
+            <column name="bio_en" value="Elisabeth is the Administration and Accounting Manager at ATHL. She oversees the company's financial and administrative management, ensuring the rigor needed for every project to run smoothly.&#10;&#10;Her attention to detail and thoroughness directly contribute to ATHL's reliability with clients and partners alike."/>
+            <where>name LIKE '%Elisabeth TUO%' AND quote_fr IS NULL</where>
+        </update>
+        <update tableName="team_members">
+            <column name="quote_fr" value="« L'équipe a dépassé nos attentes à chaque étape. Communication claire, planning respecté, et un bâtiment dont nos équipes sont fières. »"/>
+            <column name="quote_en" value="“The team exceeded our expectations at every stage. Clear communication, the schedule was met, and a building our teams are proud of.”"/>
+            <column name="initials" value="BC"/>
+            <column name="bio_fr" value="Alain Cédric est Responsable Communication du Groupe ATHL. Il porte la voix de l'entreprise, valorise le travail des équipes et veille à ce que chaque projet mené par ATHL soit visible et bien compris par ses clients et partenaires.&#10;&#10;Il travaille en lien étroit avec l'ensemble des équipes pour partager les réalisations d'ATHL et renforcer la relation de confiance avec ses clients."/>
+            <column name="bio_en" value="Alain Cédric is the Group Communications Manager at ATHL. He carries the company's voice, highlights the team's work, and ensures that every project ATHL delivers is clearly communicated to clients and partners.&#10;&#10;He works closely with all teams to share ATHL's achievements and strengthen trust with its clients."/>
+            <where>name LIKE '%Beugré Alain Cédric%' AND quote_fr IS NULL</where>
+        </update>
+    </changeSet>
+
+    <!-- Table vide (environnement neuf, ex : local) : seed complet avec le contenu réel déjà
+         en prod, bio et citation comprises. -->
+    <changeSet id="seed-team-members" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="team_members"/>
+                <columnExists tableName="team_members" columnName="bio_fr"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM team_members</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="team_members">
+            <column name="name" value="Emmanuel N'GUESSAN"/>
+            <column name="role_fr" value="Directeur Général Group"/>
+            <column name="role_en" value="Group Chief Executive Officer"/>
+            <column name="photo" value="https://res.cloudinary.com/drfq0bt4z/image/upload/v1790269226/team/xpvczo5f2xpzd5mlwoiw.jpg"/>
+            <column name="quote_fr" value="« De la première visite à la livraison, tout était documenté et dans le budget. Les équipes ont traité le chantier comme le leur. »"/>
+            <column name="quote_en" value="“From the first visit to handover, everything was documented and on budget. The teams treated the site as if it were their own.”"/>
+            <column name="initials" value="EN"/>
+            <column name="bio_fr" value="Emmanuel est le Directeur Général du Groupe ATHL. Il pilote la stratégie globale de l'entreprise et veille à la cohérence des activités de construction, de logistique et d'importation de matériaux portées par les équipes.&#10;&#10;Sous sa direction, ATHL s'est développé en gardant la même exigence sur chaque chantier : respect des délais, maîtrise du budget et accompagnement des clients du premier contact jusqu'à la livraison."/>
+            <column name="bio_en" value="Emmanuel is the Group Chief Executive Officer of ATHL. He drives the company's overall strategy and ensures consistency across its construction, logistics and materials import activities.&#10;&#10;Under his leadership, ATHL has grown while keeping the same rigor on every project: respecting deadlines, managing budgets carefully, and supporting clients from first contact through to handover."/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="team_members">
+            <column name="name" value="Gnohéré Johannel Rosalyn Elisée"/>
+            <column name="role_fr" value="Gérant / Managing Director (ATHL)"/>
+            <column name="role_en" value="Gérant / Managing Director (ATHL)"/>
+            <column name="photo" value="https://res.cloudinary.com/drfq0bt4z/image/upload/v1790335382/team/vtntccaxbjx190li4nhx.jpg"/>
+            <column name="quote_fr" value="« ATHL, c'est une équipe qui tient parole : chaque chantier est mené avec la même exigence, du premier brief à la remise des clés. »"/>
+            <column name="quote_en" value="“ATHL is a team that keeps its word: every project is run with the same rigor, from the first brief to the final handover.”"/>
+            <column name="initials" value="GE"/>
+            <column name="bio_fr" value="Gnohéré est Gérant d'ATHL, en charge de la gestion opérationnelle quotidienne de l'entreprise. Il coordonne les équipes sur le terrain pour garantir que chaque projet avance dans les règles de l'art et dans le respect des engagements pris auprès des clients.&#10;&#10;Il est particulièrement attaché à la qualité d'exécution et à la sécurité sur les chantiers, deux piliers qui guident l'ensemble des interventions d'ATHL."/>
+            <column name="bio_en" value="Gnohéré is the Managing Director of ATHL, responsible for the company's day-to-day operations. He coordinates teams on the ground to ensure every project moves forward to a high standard and in line with commitments made to clients.&#10;&#10;He places particular emphasis on execution quality and site safety, two pillars that guide all of ATHL's work."/>
+            <column name="sort_order" valueNumeric="2"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="team_members">
+            <column name="name" value="Elisabeth TUO"/>
+            <column name="role_fr" value="Responsable administrative et Comptable"/>
+            <column name="role_en" value="Responsable administrative et Comptable"/>
+            <column name="photo" value="https://res.cloudinary.com/drfq0bt4z/image/upload/v1790336694/team/il2u1lciymlojelb7rya.jpg"/>
+            <column name="quote_fr" value="« ATHL a mené une rénovation complexe avec professionnalisme et précision. Leur souci du détail et leur culture sécurité font vraiment la différence. »"/>
+            <column name="quote_en" value="“ATHL carried out a complex renovation with professionalism and precision. Their attention to detail and safety culture really make the difference.”"/>
+            <column name="initials" value="ET"/>
+            <column name="bio_fr" value="Elisabeth est Responsable Administrative et Comptable chez ATHL. Elle supervise la gestion financière et administrative de l'entreprise, garantissant la rigueur nécessaire au bon fonctionnement de chaque projet.&#10;&#10;Son attention au détail et sa rigueur contribuent directement à la fiabilité d'ATHL vis-à-vis de ses clients et de ses partenaires."/>
+            <column name="bio_en" value="Elisabeth is the Administration and Accounting Manager at ATHL. She oversees the company's financial and administrative management, ensuring the rigor needed for every project to run smoothly.&#10;&#10;Her attention to detail and thoroughness directly contribute to ATHL's reliability with clients and partners alike."/>
+            <column name="sort_order" valueNumeric="3"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="team_members">
+            <column name="name" value="Beugré Alain Cédric"/>
+            <column name="role_fr" value="Responsable Communication Group"/>
+            <column name="role_en" value="Responsable Communication Group"/>
+            <column name="photo" value="https://res.cloudinary.com/drfq0bt4z/image/upload/v1790336776/team/wctpegvhyfxgrx2ctkix.jpg"/>
+            <column name="quote_fr" value="« L'équipe a dépassé nos attentes à chaque étape. Communication claire, planning respecté, et un bâtiment dont nos équipes sont fières. »"/>
+            <column name="quote_en" value="“The team exceeded our expectations at every stage. Clear communication, the schedule was met, and a building our teams are proud of.”"/>
+            <column name="initials" value="BC"/>
+            <column name="bio_fr" value="Alain Cédric est Responsable Communication du Groupe ATHL. Il porte la voix de l'entreprise, valorise le travail des équipes et veille à ce que chaque projet mené par ATHL soit visible et bien compris par ses clients et partenaires.&#10;&#10;Il travaille en lien étroit avec l'ensemble des équipes pour partager les réalisations d'ATHL et renforcer la relation de confiance avec ses clients."/>
+            <column name="bio_en" value="Alain Cédric is the Group Communications Manager at ATHL. He carries the company's voice, highlights the team's work, and ensures that every project ATHL delivers is clearly communicated to clients and partners.&#10;&#10;He works closely with all teams to share ATHL's achievements and strengthen trust with its clients."/>
+            <column name="sort_order" valueNumeric="4"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+    </changeSet>
+
+    <!-- Table "testimonials" : créée par Hibernate (ddl-auto=update) avant la fusion des
+         témoignages dans team_members, plus aucun code ne la lit ni ne l'écrit. -->
+    <changeSet id="drop-testimonials-table" author="athl">
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="testimonials"/>
+        </preConditions>
+        <dropTable tableName="testimonials"/>
+    </changeSet>
+
+</databaseChangeLog>
