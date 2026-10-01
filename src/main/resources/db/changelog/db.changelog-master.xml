@@ -21,5 +21,6 @@
     <include file="db/changelog/changes/0006-contact-page-content.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/changes/0008-team-members-bio.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/changes/0009-team-members-quote.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/changes/0010-drop-testimonials-table.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

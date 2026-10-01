@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!--
+        Nettoie la table "testimonials" : elle a été créée par Hibernate (ddl-auto=update) avant
+        qu'on fusionne les témoignages dans TeamMember (voir 0009). Son contenu n'a plus aucun
+        rôle, l'entité Testimonial n'existe plus côté backend — rien ne la lit ni ne l'écrit.
+    -->
+
+    <changeSet id="drop-testimonials-table" author="athl">
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="testimonials"/>
+        </preConditions>
+        <dropTable tableName="testimonials"/>
+    </changeSet>
+
+</databaseChangeLog>
