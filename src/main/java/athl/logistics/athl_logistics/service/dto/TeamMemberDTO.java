@@ -16,6 +16,9 @@ public class TeamMemberDTO {
     private String photo;
     private String bioFr;
     private String bioEn;
+    private String quoteFr;
+    private String quoteEn;
+    private String initials;
     private int sortOrder;
     private Instant updatedAt;
 
@@ -27,6 +30,9 @@ public class TeamMemberDTO {
         this.photo = entity.getPhoto();
         this.bioFr = entity.getBioFr();
         this.bioEn = entity.getBioEn();
+        this.quoteFr = entity.getQuoteFr();
+        this.quoteEn = entity.getQuoteEn();
+        this.initials = entity.getInitials();
         this.sortOrder = entity.getSortOrder();
         this.updatedAt = entity.getUpdatedAt();
     }

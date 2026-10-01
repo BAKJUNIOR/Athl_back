@@ -67,12 +67,11 @@ public class SecurityConfig {
 
                                         // Équipe : liste publique (page Équipe du site), pas de notion de
                                         // brouillon/publié ici — gestion réservée aux admins.
+                                        // Équipe : les champs quote*/initials servent aussi au carrousel de
+                                        // témoignages de l'accueil (voir TeamMember) — une seule table, pas
+                                        // de ressource /testimonials séparée.
                                         .requestMatchers(HttpMethod.GET, "/api/v1/team").permitAll()
                                         .requestMatchers("/api/v1/team/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
-
-                                        // Témoignages clients (carrousel accueil) : même principe que l'équipe.
-                                        .requestMatchers(HttpMethod.GET, "/api/v1/testimonials").permitAll()
-                                        .requestMatchers("/api/v1/testimonials/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
                                         // Réalisations/Projets : même principe que Services (liste publique
                                         // filtrée selon l'authentification), sans détail par slug.

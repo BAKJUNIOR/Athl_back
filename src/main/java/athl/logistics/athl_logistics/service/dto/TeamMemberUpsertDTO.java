@@ -17,5 +17,8 @@ public class TeamMemberUpsertDTO {
     private String photo;
     private String bioFr;
     private String bioEn;
+    private String quoteFr;
+    private String quoteEn;
+    private String initials;
     private int sortOrder;
 }

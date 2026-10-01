@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!--
+        Ajoute quote_fr/quote_en/initials à team_members (voir TeamMember) : un membre avec une
+        citation renseignée apparaît aussi dans le carrousel de témoignages de l'accueil — pas de
+        table "témoignages" séparée, le même profil sert les deux affichages.
+    -->
+
+    <changeSet id="add-team-members-quote-columns" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="team_members"/>
+                <not>
+                    <columnExists tableName="team_members" columnName="quote_fr"/>
+                </not>
+            </and>
+        </preConditions>
+        <addColumn tableName="team_members">
+            <column name="quote_fr" type="TEXT"/>
+            <column name="quote_en" type="TEXT"/>
+            <column name="initials" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Réattache les citations qui existaient jusqu'ici en dur côté front (testimonials.data.ts)
+         aux membres d'équipe déjà en base correspondants, identifiés par leur nom. N'écrase rien
+         si une citation a déjà été saisie depuis le BO entre-temps. -->
+    <changeSet id="backfill-team-members-quote" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="team_members"/>
+                <columnExists tableName="team_members" columnName="quote_fr"/>
+            </and>
+        </preConditions>
+        <update tableName="team_members">
+            <column name="quote_fr" value="« De la première visite à la livraison, tout était documenté et dans le budget. Les équipes ont traité le chantier comme le leur. »"/>
+            <column name="quote_en" value="“From the first visit to handover, everything was documented and on budget. The teams treated the site as if it were their own.”"/>
+            <column name="initials" value="EN"/>
+            <where>name LIKE '%GUESSAN%' AND quote_fr IS NULL</where>
+        </update>
+        <update tableName="team_members">
+            <column name="quote_fr" value="« L'équipe a dépassé nos attentes à chaque étape. Communication claire, planning respecté, et un bâtiment dont nos équipes sont fières. »"/>
+            <column name="quote_en" value="“The team exceeded our expectations at every stage. Clear communication, the schedule was met, and a building our teams are proud of.”"/>
+            <column name="initials" value="BC"/>
+            <where>name LIKE '%Beugré Alain Cédric%' AND quote_fr IS NULL</where>
+        </update>
+        <update tableName="team_members">
+            <column name="quote_fr" value="« ATHL a mené une rénovation complexe avec professionnalisme et précision. Leur souci du détail et leur culture sécurité font vraiment la différence. »"/>
+            <column name="quote_en" value="“ATHL carried out a complex renovation with professionalism and precision. Their attention to detail and safety culture really make the difference.”"/>
+            <column name="initials" value="ET"/>
+            <where>name LIKE '%Elisabeth TUO%' AND quote_fr IS NULL</where>
+        </update>
+        <update tableName="team_members">
+            <column name="quote_fr" value="« ATHL, c'est une équipe qui tient parole : chaque chantier est mené avec la même exigence, du premier brief à la remise des clés. »"/>
+            <column name="quote_en" value="“ATHL is a team that keeps its word: every project is run with the same rigor, from the first brief to the final handover.”"/>
+            <column name="initials" value="GE"/>
+            <where>name LIKE '%Gnohéré%' AND quote_fr IS NULL</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

@@ -70,6 +70,9 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         entity.setPhoto(dto.getPhoto());
         entity.setBioFr(dto.getBioFr());
         entity.setBioEn(dto.getBioEn());
+        entity.setQuoteFr(dto.getQuoteFr());
+        entity.setQuoteEn(dto.getQuoteEn());
+        entity.setInitials(dto.getInitials());
         entity.setSortOrder(dto.getSortOrder());
     }
 }

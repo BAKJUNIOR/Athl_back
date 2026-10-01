@@ -13,6 +13,10 @@ import java.time.Instant;
  * Membre de l'équipe dirigeante affiché sur la page Équipe du site vitrine.
  * Pas de notion de brouillon/publié ici (contrairement à Services/Jobs) : un membre listé
  * est visible, point — le retirer de la page se fait en le supprimant.
+ *
+ * quoteFr/quoteEn/initials servent au carrousel de témoignages de l'accueil : un membre qui a
+ * une citation renseignée y apparaît aussi, avec sa photo/nom/fonction déjà présents ici —
+ * pas de table "témoignages" séparée, chaque affichage prend ce dont il a besoin.
  */
 @Data
 @NoArgsConstructor
@@ -42,6 +46,14 @@ public class TeamMember {
 
     @Column(name = "bio_en", columnDefinition = "TEXT")
     private String bioEn;
+
+    @Column(name = "quote_fr", columnDefinition = "TEXT")
+    private String quoteFr;
+
+    @Column(name = "quote_en", columnDefinition = "TEXT")
+    private String quoteEn;
+
+    private String initials;
 
     @Column(name = "sort_order")
     private int sortOrder;
