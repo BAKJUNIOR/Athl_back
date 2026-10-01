@@ -1,6 +1,6 @@
 package athl.logistics.athl_logistics.service.dto;
 
-import athl.logistics.athl_logistics.models.TeamMember;
+import athl.logistics.athl_logistics.models.Testimonial;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,25 +8,27 @@ import java.time.Instant;
 
 @Data
 @NoArgsConstructor
-public class TeamMemberDTO {
+public class TestimonialDTO {
     private Long id;
     private String name;
     private String roleFr;
     private String roleEn;
+    private String textFr;
+    private String textEn;
     private String photo;
-    private String bioFr;
-    private String bioEn;
+    private String initials;
     private int sortOrder;
     private Instant updatedAt;
 
-    public TeamMemberDTO(TeamMember entity) {
+    public TestimonialDTO(Testimonial entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.roleFr = entity.getRoleFr();
         this.roleEn = entity.getRoleEn();
+        this.textFr = entity.getTextFr();
+        this.textEn = entity.getTextEn();
         this.photo = entity.getPhoto();
-        this.bioFr = entity.getBioFr();
-        this.bioEn = entity.getBioEn();
+        this.initials = entity.getInitials();
         this.sortOrder = entity.getSortOrder();
         this.updatedAt = entity.getUpdatedAt();
     }

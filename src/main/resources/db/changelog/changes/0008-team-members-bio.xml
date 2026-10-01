@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!--
+        Ajoute bio_fr/bio_en à team_members (voir TeamMember), affichées sur la fiche détail
+        d'un membre côté front. Colonnes nullables : les membres déjà créés via le BO avant cet
+        ajout gardent une bio vide tant qu'elle n'est pas renseignée.
+    -->
+
+    <changeSet id="add-team-members-bio-columns" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="team_members"/>
+                <not>
+                    <columnExists tableName="team_members" columnName="bio_fr"/>
+                </not>
+            </and>
+        </preConditions>
+        <addColumn tableName="team_members">
+            <column name="bio_fr" type="TEXT"/>
+            <column name="bio_en" type="TEXT"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

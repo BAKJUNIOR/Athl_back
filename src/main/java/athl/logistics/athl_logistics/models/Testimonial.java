@@ -10,15 +10,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 
 /**
- * Membre de l'équipe dirigeante affiché sur la page Équipe du site vitrine.
- * Pas de notion de brouillon/publié ici (contrairement à Services/Jobs) : un membre listé
- * est visible, point — le retirer de la page se fait en le supprimant.
+ * Témoignage client affiché en carrousel sur la page d'accueil. Le nom n'est pas traduit
+ * (comme TeamMember), seuls le rôle et le texte le sont.
  */
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "team_members")
-public class TeamMember {
+@Table(name = "testimonials")
+public class Testimonial {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,13 +34,16 @@ public class TeamMember {
     @Column(name = "role_en")
     private String roleEn;
 
+    @NotBlank(message = "Le texte en français est requis")
+    @Column(name = "text_fr", nullable = false, columnDefinition = "TEXT")
+    private String textFr;
+
+    @Column(name = "text_en", columnDefinition = "TEXT")
+    private String textEn;
+
     private String photo;
 
-    @Column(name = "bio_fr", columnDefinition = "TEXT")
-    private String bioFr;
-
-    @Column(name = "bio_en", columnDefinition = "TEXT")
-    private String bioEn;
+    private String initials;
 
     @Column(name = "sort_order")
     private int sortOrder;

@@ -70,6 +70,10 @@ public class SecurityConfig {
                                         .requestMatchers(HttpMethod.GET, "/api/v1/team").permitAll()
                                         .requestMatchers("/api/v1/team/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
+                                        // Témoignages clients (carrousel accueil) : même principe que l'équipe.
+                                        .requestMatchers(HttpMethod.GET, "/api/v1/testimonials").permitAll()
+                                        .requestMatchers("/api/v1/testimonials/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+
                                         // Réalisations/Projets : même principe que Services (liste publique
                                         // filtrée selon l'authentification), sans détail par slug.
                                         .requestMatchers(HttpMethod.GET, "/api/v1/projects").permitAll()

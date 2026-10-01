@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class TeamMemberUpsertDTO {
+public class TestimonialUpsertDTO {
     @NotBlank(message = "Le nom est requis")
     private String name;
 
@@ -14,8 +14,12 @@ public class TeamMemberUpsertDTO {
     private String roleFr;
 
     private String roleEn;
+
+    @NotBlank(message = "Le texte en français est requis")
+    private String textFr;
+
+    private String textEn;
     private String photo;
-    private String bioFr;
-    private String bioEn;
+    private String initials;
     private int sortOrder;
 }
