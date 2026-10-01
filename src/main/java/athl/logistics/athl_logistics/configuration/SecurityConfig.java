@@ -93,6 +93,10 @@ public class SecurityConfig {
                                         .requestMatchers(HttpMethod.GET, "/api/v1/popups").permitAll()
                                         .requestMatchers("/api/v1/popups/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
+                                        // Upload Cloudinary pour le BO (voir UploadController) : jamais public,
+                                        // c'est précisément ce qui garde API_KEY/API_SECRET hors du navigateur.
+                                        .requestMatchers("/api/v1/uploads").hasAnyRole("SUPER_ADMIN", "ADMIN")
+
 
                                         .requestMatchers(HttpMethod.POST, "/api/v1/quotes").permitAll()
                                         .requestMatchers("/api/v1/quotes/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
