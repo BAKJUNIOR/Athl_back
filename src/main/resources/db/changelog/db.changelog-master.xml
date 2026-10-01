@@ -20,5 +20,6 @@
     <include file="db/changelog/changes/0005-partners.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/changes/0006-contact-page-content.xml" relativeToChangelogFile="false"/>
     <include file="db/changelog/changes/0007-team-members.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/changes/0008-services.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

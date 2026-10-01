@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!--
+        Services (voir ServiceOffering/ServicePrestation/ServiceProcessStep) : page /services et
+        /services/:slug du site vitrine.
+
+        1) "construction" : reprend EXACTEMENT le contenu déjà publié en prod (voir
+           /api/v1/services au moment de l'écriture), pour que les environnements neufs (local,
+           autre instance) partent avec la même donnée réelle plutôt qu'une page vide. N'insère
+           que si la table est entièrement vide : ne touche jamais une base déjà remplie, prod
+           comprise.
+
+        2) "logistique-transport" : PROPOSITION de second service, cohérente avec le
+           positionnement déjà affiché partout sur le site ("construction, rénovation, mobilité
+           et importation de matériaux" — footer, à-propos) mais qui n'existait encore nulle part
+           comme service à part entière. Inséré en status DRAFT (jamais visible publiquement tant
+           que personne ne clique "Publier" côté BO) — à relire/ajuster avant publication. Utilise
+           des photos déjà présentes dans le front (images/import*.jpg, images/vtc-mobilite.jpg),
+           pas d'image inventée. Précondition sur le slug (pas sur "table vide") : se propose même
+           sur une base déjà remplie, prod comprise, sans jamais toucher au service existant.
+    -->
+
+    <changeSet id="seed-service-construction" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="services"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM services</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="services">
+            <column name="slug" value="construction"/>
+            <column name="number" value="01"/>
+            <column name="title_fr" value="Construction &amp; rénovation"/>
+            <column name="title_en" value="Construction &amp; Renovation"/>
+            <column name="short_title_fr" value="Construction"/>
+            <column name="short_title_en" value="Construction"/>
+            <column name="lead_fr" value="L'expertise qui bâtit, la logistique qui accélère. ATHL vous accompagne de la construction à la livraison de vos matériaux et solutions de transport."/>
+            <column name="lead_en" value="The expertise that builds, the logistics that accelerate. ATHL supports you from construction through to material delivery and transport solutions."/>
+            <column name="image" value="https://res.cloudinary.com/drfq0bt4z/image/upload/v1790324821/services/sjeq7787qhlzefxongfn.jpg"/>
+            <column name="hero_image" value="https://res.cloudinary.com/drfq0bt4z/image/upload/v1790324833/services/dlminwwqy6z0xrajyhrc.jpg"/>
+            <column name="status" value="PUBLISHED"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="service_gallery">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="https://res.cloudinary.com/drfq0bt4z/image/upload/v1790324873/services/gallery/ymqw1mwpagfpopffaehl.jpg"/>
+        </insert>
+        <insert tableName="service_gallery">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="https://res.cloudinary.com/drfq0bt4z/image/upload/v1790324883/services/gallery/vzptlp0pvlmpboynmc0w.jpg"/>
+        </insert>
+        <insert tableName="service_gallery">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="sort_order" valueNumeric="2"/>
+            <column name="image_url" value="https://res.cloudinary.com/drfq0bt4z/image/upload/v1790324893/services/gallery/v2rx5px2w3ah47fx2clg.jpg"/>
+        </insert>
+
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="title_fr" value="Construction"/>
+            <column name="title_en" value="Construction"/>
+            <column name="description_fr" value="Gros œuvre, structure métallique et bâtiment neuf, du terrassement à la livraison."/>
+            <column name="description_en" value="Structural works, steel-frame builds and new construction, from groundwork to handover."/>
+            <column name="sort_order" valueNumeric="1"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="title_fr" value="Rénovation &amp; réhabilitation"/>
+            <column name="title_en" value="Renovation &amp; rehabilitation"/>
+            <column name="description_fr" value="Remise à neuf, extension et réhabilitation de bâtiments existants, résidentiels comme commerciaux."/>
+            <column name="description_en" value="Refurbishment, extensions and rehabilitation of existing buildings, residential and commercial."/>
+            <column name="sort_order" valueNumeric="2"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="title_fr" value="Approvisionnement en matériaux"/>
+            <column name="title_en" value="Materials sourcing"/>
+            <column name="description_fr" value="Achat, transport et livraison des matériaux de chantier dans les délais prévus."/>
+            <column name="description_en" value="Sourcing, transport and on-site delivery of construction materials, on schedule."/>
+            <column name="sort_order" valueNumeric="3"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="title_fr" value="Gestion immobilière"/>
+            <column name="title_en" value="Property management"/>
+            <column name="description_fr" value="Suivi et entretien des biens bâtis pour en préserver la valeur dans la durée."/>
+            <column name="description_en" value="Follow-up and maintenance of built assets to preserve their value over time."/>
+            <column name="sort_order" valueNumeric="4"/>
+        </insert>
+
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="step_number" value="01"/>
+            <column name="title_fr" value="Diagnostic &amp; devis"/>
+            <column name="title_en" value="Assessment &amp; quote"/>
+            <column name="description_fr" value="Visite du site, analyse du besoin et proposition chiffrée."/>
+            <column name="description_en" value="Site visit, needs analysis and priced proposal."/>
+            <column name="sort_order" valueNumeric="1"/>
+        </insert>
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="step_number" value="02"/>
+            <column name="title_fr" value="Planification"/>
+            <column name="title_en" value="Planning"/>
+            <column name="description_fr" value="Choix des équipes, du matériel et calendrier de chantier."/>
+            <column name="description_en" value="Crew and equipment allocation, project schedule."/>
+            <column name="sort_order" valueNumeric="2"/>
+        </insert>
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="step_number" value="03"/>
+            <column name="title_fr" value="Exécution &amp; suivi"/>
+            <column name="title_en" value="Execution &amp; monitoring"/>
+            <column name="description_fr" value="Travaux encadrés par un chef de chantier, contrôle qualité continu."/>
+            <column name="description_en" value="Works supervised by a site manager, ongoing quality control."/>
+            <column name="sort_order" valueNumeric="3"/>
+        </insert>
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="step_number" value="04"/>
+            <column name="title_fr" value="Livraison &amp; garantie"/>
+            <column name="title_en" value="Handover &amp; warranty"/>
+            <column name="description_fr" value="Réception du chantier et suivi post-livraison."/>
+            <column name="description_en" value="Site handover and post-delivery follow-up."/>
+            <column name="sort_order" valueNumeric="4"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="propose-service-logistique-transport" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="services"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM services WHERE slug = 'logistique-transport'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="services">
+            <column name="slug" value="logistique-transport"/>
+            <column name="number" value="02"/>
+            <column name="title_fr" value="Logistique &amp; Transport"/>
+            <column name="title_en" value="Logistics &amp; Transport"/>
+            <column name="short_title_fr" value="Logistique"/>
+            <column name="short_title_en" value="Logistics"/>
+            <column name="lead_fr" value="La logistique qui accélère vos projets. ATHL organise l'importation, le transport et la livraison de vos matériaux et équipements, partout en Côte d'Ivoire."/>
+            <column name="lead_en" value="The logistics that accelerate your projects. ATHL organizes the import, transport and delivery of your materials and equipment, across Côte d'Ivoire."/>
+            <column name="image" value="images/import.jpg"/>
+            <column name="hero_image" value="images/import2.jpg"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="service_gallery">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'logistique-transport')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/import2.jpg"/>
+        </insert>
+        <insert tableName="service_gallery">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'logistique-transport')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/import3.jpg"/>
+        </insert>
+        <insert tableName="service_gallery">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'logistique-transport')"/>
+            <column name="sort_order" valueNumeric="2"/>
+            <column name="image_url" value="images/vtc-mobilite.jpg"/>
+        </insert>
+
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'logistique-transport')"/>
+            <column name="title_fr" value="Importation de matériaux"/>
+            <column name="title_en" value="Materials import"/>
+            <column name="description_fr" value="Sourcing et importation de matériaux de construction et équipements depuis nos zones d'approvisionnement (Europe, Turquie, Maroc, Chine)."/>
+            <column name="description_en" value="Sourcing and import of construction materials and equipment from our supply regions (Europe, Turkey, Morocco, China)."/>
+            <column name="sort_order" valueNumeric="1"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'logistique-transport')"/>
+            <column name="title_fr" value="Transport &amp; livraison"/>
+            <column name="title_en" value="Transport &amp; delivery"/>
+            <column name="description_fr" value="Acheminement des marchandises jusqu'au chantier ou au point de livraison convenu, dans les délais."/>
+            <column name="description_en" value="Delivery of goods to the site or agreed drop-off point, on schedule."/>
+            <column name="sort_order" valueNumeric="2"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'logistique-transport')"/>
+            <column name="title_fr" value="Mobilité"/>
+            <column name="title_en" value="Mobility"/>
+            <column name="description_fr" value="Solutions de mobilité et de transport de personnes et de matériel adaptées aux besoins du chantier."/>
+            <column name="description_en" value="Mobility and transport solutions for people and equipment tailored to site needs."/>
+            <column name="sort_order" valueNumeric="3"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'logistique-transport')"/>
+            <column name="title_fr" value="Gestion douanière"/>
+            <column name="title_en" value="Customs management"/>
+            <column name="description_fr" value="Accompagnement dans les démarches douanières et administratives liées à l'importation."/>
+            <column name="description_en" value="Support with customs and administrative procedures related to imports."/>
+            <column name="sort_order" valueNumeric="4"/>
+        </insert>
+
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'logistique-transport')"/>
+            <column name="step_number" value="01"/>
+            <column name="title_fr" value="Analyse du besoin"/>
+            <column name="title_en" value="Needs analysis"/>
+            <column name="description_fr" value="Identification des matériaux, volumes et délais nécessaires."/>
+            <column name="description_en" value="Identifying the materials, volumes and timelines needed."/>
+            <column name="sort_order" valueNumeric="1"/>
+        </insert>
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'logistique-transport')"/>
+            <column name="step_number" value="02"/>
+            <column name="title_fr" value="Sourcing &amp; commande"/>
+            <column name="title_en" value="Sourcing &amp; ordering"/>
+            <column name="description_fr" value="Sélection des fournisseurs et passation des commandes."/>
+            <column name="description_en" value="Selecting suppliers and placing orders."/>
+            <column name="sort_order" valueNumeric="2"/>
+        </insert>
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'logistique-transport')"/>
+            <column name="step_number" value="03"/>
+            <column name="title_fr" value="Transport &amp; suivi"/>
+            <column name="title_en" value="Transport &amp; tracking"/>
+            <column name="description_fr" value="Acheminement supervisé, suivi en temps réel de l'expédition."/>
+            <column name="description_en" value="Supervised transport, real-time shipment tracking."/>
+            <column name="sort_order" valueNumeric="3"/>
+        </insert>
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'logistique-transport')"/>
+            <column name="step_number" value="04"/>
+            <column name="title_fr" value="Livraison &amp; réception"/>
+            <column name="title_en" value="Delivery &amp; handover"/>
+            <column name="description_fr" value="Livraison sur site et contrôle de conformité à la réception."/>
+            <column name="description_en" value="On-site delivery and compliance check on receipt."/>
+            <column name="sort_order" valueNumeric="4"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
