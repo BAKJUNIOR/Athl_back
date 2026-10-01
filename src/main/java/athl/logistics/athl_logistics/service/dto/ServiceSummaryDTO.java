@@ -6,8 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
-// Version allégée pour les listes (BO et front) : pas de galerie/prestations/étapes.
+// Version allégée pour les listes (BO et front) : pas de galerie ni d'étapes de processus.
+// Les prestations et stats restent incluses — le bloc "Bienvenue chez ATHL" (onglets, accueil
+// et À propos) en a besoin pour les 3 services sans appel supplémentaire par service.
 @Data
 @NoArgsConstructor
 public class ServiceSummaryDTO {
@@ -21,6 +25,8 @@ public class ServiceSummaryDTO {
     private String leadFr;
     private String leadEn;
     private String image;
+    private String heroImage;
+    private List<ServicePrestationDTO> prestations;
     private ServiceStatus status;
     private Instant updatedAt;
 
@@ -35,6 +41,8 @@ public class ServiceSummaryDTO {
         this.leadFr = entity.getLeadFr();
         this.leadEn = entity.getLeadEn();
         this.image = entity.getImage();
+        this.heroImage = entity.getHeroImage();
+        this.prestations = entity.getPrestations().stream().map(ServicePrestationDTO::new).collect(Collectors.toList());
         this.status = entity.getStatus();
         this.updatedAt = entity.getUpdatedAt();
     }

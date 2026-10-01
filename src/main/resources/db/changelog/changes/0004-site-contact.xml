@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!--
+        Coordonnées du site (voir SiteContact) : téléphones, adresse, réseaux sociaux, email de
+        contact et lieu de la carte Google Maps — toutes partagées entre le footer et la page
+        Contact. Table singleton, une seule ligne, id figé à 1.
+    -->
+
+    <changeSet id="insert-site-contact" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="site_contact"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM site_contact WHERE id = 1</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="site_contact">
+            <column name="id" valueNumeric="1"/>
+            <column name="phone1" value="+225 07 78 09 58 58"/>
+            <column name="phone2" value="+225 07 09 99 33 47"/>
+            <column name="phone3" value="+225 07 58 60 16 27"/>
+            <column name="address" value="Abidjan, Côte d'Ivoire"/>
+            <column name="facebook_url" value="https://www.facebook.com/people/Africa-Gold-Talent-Consulting/100088839685373/"/>
+            <column name="youtube_url" value="https://www.youtube.com/@ATHL-LOGISTIQUE"/>
+            <column name="linkedin_url" value="https://www.linkedin.com/company/africa-talent-habitat-logistique-athl/"/>
+            <column name="tiktok_url" value="https://www.tiktok.com/@africatalentconsulting"/>
+            <column name="contact_email" value="contact@athl.com"/>
+            <column name="footer_about_fr" value="Africa Talent Habitat &amp; Logistique — construction, rénovation, mobilité et importation de matériaux, portées par des équipes qualifiées."/>
+            <column name="footer_about_en" value="Africa Talent Habitat &amp; Logistics — construction, renovation, mobility and import of materials, delivered by skilled teams."/>
+            <column name="map_location" value="Abidjan, Côte d'Ivoire"/>
+        </insert>
+    </changeSet>
+
+    <!-- Comble footer_about_fr/en, tiktok_url, contact_email, map_location sur une ligne
+         site_contact(id=1) déjà existante (créée avant l'ajout de ces colonnes) sans jamais
+         écraser ce qui a pu être rempli depuis le BO. -->
+    <changeSet id="backfill-site-contact-footer-fields" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="site_contact"/>
+                <columnExists tableName="site_contact" columnName="footer_about_fr"/>
+                <sqlCheck expectedResult="1">SELECT COUNT(*) FROM site_contact WHERE id = 1</sqlCheck>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM site_contact WHERE id = 1 AND footer_about_fr IS NOT NULL</sqlCheck>
+            </and>
+        </preConditions>
+        <update tableName="site_contact">
+            <column name="footer_about_fr" value="Africa Talent Habitat &amp; Logistique — construction, rénovation, mobilité et importation de matériaux, portées par des équipes qualifiées."/>
+            <column name="footer_about_en" value="Africa Talent Habitat &amp; Logistics — construction, renovation, mobility and import of materials, delivered by skilled teams."/>
+            <column name="tiktok_url" value="https://www.tiktok.com/@africatalentconsulting"/>
+            <column name="contact_email" value="contact@athl.com"/>
+            <column name="map_location" value="Abidjan, Côte d'Ivoire"/>
+            <where>id = 1</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!-- Contenu de la page /contact (voir ContactPageContent). Reprend le texte qui était
+         codé en dur dans contact.component.html / public/i18n/fr.json|en.json. -->
+
+    <changeSet id="insert-contact-page-content" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="contact_page_content"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM contact_page_content WHERE id = 1</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="contact_page_content">
+            <column name="id" valueNumeric="1"/>
+            <column name="hero_eyebrow_fr" value="Contact"/>
+            <column name="hero_eyebrow_en" value="Contact"/>
+            <column name="hero_title_fr" value="Besoin de conseils ou d'un devis ?"/>
+            <column name="hero_title_en" value="Need advice or a quote?"/>
+            <column name="hero_subtitle_fr" value="Pour plus d'informations, contactez-nous — nos équipes répondent directement."/>
+            <column name="hero_subtitle_en" value="For more information, get in touch — our teams reply directly."/>
+            <column name="write_to_us_eyebrow_fr" value="Écrivez-nous"/>
+            <column name="write_to_us_eyebrow_en" value="Write to us"/>
+            <column name="info_eyebrow_fr" value="Besoin d'aide ?"/>
+            <column name="info_eyebrow_en" value="Need any help?"/>
+            <column name="info_heading_fr" value="Entrer en contact avec nous"/>
+            <column name="info_heading_en" value="Get in touch with us"/>
+            <column name="phone_title_fr" value="Une question ?"/>
+            <column name="phone_title_en" value="Have any question?"/>
+            <column name="phone_note_fr" value="Devis, chantiers et candidatures — également joignables sur WhatsApp."/>
+            <column name="phone_note_en" value="Quotes, sites and applications — also reachable on WhatsApp."/>
+            <column name="email_title_fr" value="Écrivez-nous"/>
+            <column name="email_title_en" value="Write us an email"/>
+            <column name="address_title_fr" value="Nous rendre visite"/>
+            <column name="address_title_en" value="Visit anytime"/>
+            <column name="address_note_fr" value="Interventions sur Abidjan et l'ensemble du territoire ivoirien."/>
+            <column name="address_note_en" value="Operating in Abidjan and across Côte d'Ivoire."/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

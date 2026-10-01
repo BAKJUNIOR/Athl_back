@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!-- Bandeau "Nos partenaires" (voir PartnersSection/Partner). Reprend le texte et les
+         logos qui étaient codés en dur dans partners.data.ts / public/i18n/fr.json|en.json. -->
+
+    <changeSet id="insert-partners-section" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="partners_section"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM partners_section WHERE id = 1</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="partners_section">
+            <column name="id" valueNumeric="1"/>
+            <column name="eyebrow_fr" value="Ils nous font confiance"/>
+            <column name="eyebrow_en" value="They trust us"/>
+            <column name="title_fr" value="Nos partenaires"/>
+            <column name="title_en" value="Our partners"/>
+            <column name="subtitle_fr" value="Des fournisseurs, transporteurs et partenaires de confiance qui nous accompagnent sur chaque chantier et chaque livraison."/>
+            <column name="subtitle_en" value="Suppliers, carriers and trusted partners supporting us on every site and every delivery."/>
+            <column name="cta_label_fr" value="Devenir partenaire"/>
+            <column name="cta_label_en" value="Become a partner"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-partners-list" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="partners"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM partners WHERE section_id = 1</sqlCheck>
+            </and>
+        </preConditions>
+        <sql>
+            INSERT INTO partners (section_id, name, logo, sort_order)
+            VALUES
+                (1, 'Suzuki', 'images/partners/suzuki.svg', 0),
+                (1, 'Toyota', 'images/partners/toyota.svg', 1),
+                (1, 'Caterpillar', 'images/partners/caterpillar.svg', 2),
+                (1, 'DHL', 'images/partners/dhl.svg', 3),
+                (1, 'Volvo', 'images/partners/volvo.svg', 4),
+                (1, 'Hyundai', 'images/partners/hyundai.svg', 5);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

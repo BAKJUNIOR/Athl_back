@@ -55,21 +55,13 @@ public class SecurityConfig {
                                         .requestMatchers("/api/v1/users/resend-activation-code").permitAll()
                                         .requestMatchers("/api/v1/users/current-user").authenticated()
 
-                                        // Services : liste publique (filtrée par ServiceOfferingServiceImpl selon
-                                        // l'authentification), détail par slug public (publiés uniquement),
-                                        // tout le reste (détail par id, création, modification, publier/
-                                        // dépublier, suppression) réservé aux admins.
                                         .requestMatchers(HttpMethod.GET, "/api/v1/services").permitAll()
                                         .requestMatchers(HttpMethod.GET, "/api/v1/services/slug/**").permitAll()
                                         .requestMatchers("/api/v1/services/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                                        // Carrières : même principe que Services (liste publique filtrée,
-                                        // reste réservé aux admins), sans détail par slug ici.
                                         .requestMatchers(HttpMethod.GET, "/api/v1/jobs").permitAll()
                                         .requestMatchers("/api/v1/jobs/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                                        // Domaines de carrière : liste ouverte, publique en lecture (filtres du
-                                        // front), création/suppression réservées aux admins.
                                         .requestMatchers(HttpMethod.GET, "/api/v1/job-domains").permitAll()
                                         .requestMatchers("/api/v1/job-domains/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
@@ -83,22 +75,25 @@ public class SecurityConfig {
                                         .requestMatchers(HttpMethod.GET, "/api/v1/projects").permitAll()
                                         .requestMatchers("/api/v1/projects/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                                        // Paramètres du site (compteurs + coordonnées) : lecture publique
+                                        // Paramètres du site (coordonnées) : lecture publique
                                         // (accueil, footer), modification réservée aux admins.
-                                        .requestMatchers(HttpMethod.GET, "/api/v1/home-stats").permitAll()
-                                        .requestMatchers(HttpMethod.PUT, "/api/v1/home-stats").hasAnyRole("SUPER_ADMIN", "ADMIN")
                                         .requestMatchers(HttpMethod.GET, "/api/v1/site-settings/contact").permitAll()
                                         .requestMatchers(HttpMethod.PUT, "/api/v1/site-settings/contact").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                                        // Popups : liste publique filtrée sur les actives (une par page),
-                                        // gestion complète (CRUD + activation) réservée aux admins.
+                                        .requestMatchers(HttpMethod.GET, "/api/v1/about-page").permitAll()
+                                        .requestMatchers(HttpMethod.PUT, "/api/v1/about-page").hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+                                        .requestMatchers(HttpMethod.GET, "/api/v1/partners").permitAll()
+                                        .requestMatchers(HttpMethod.PUT, "/api/v1/partners").hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+                                        .requestMatchers(HttpMethod.GET, "/api/v1/contact-page").permitAll()
+                                        .requestMatchers(HttpMethod.PUT, "/api/v1/contact-page").hasAnyRole("SUPER_ADMIN", "ADMIN")
+
+
                                         .requestMatchers(HttpMethod.GET, "/api/v1/popups").permitAll()
                                         .requestMatchers("/api/v1/popups/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                                        // Demandes de devis / candidatures : soumission publique (formulaires du
-                                        // site vitrine), consultation et suivi (liste, statut, suppression)
-                                        // réservés aux admins — ce sont des soumissions de visiteurs, pas un
-                                        // contenu que le BO crée.
+
                                         .requestMatchers(HttpMethod.POST, "/api/v1/quotes").permitAll()
                                         .requestMatchers("/api/v1/quotes/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
                                         .requestMatchers(HttpMethod.POST, "/api/v1/applications").permitAll()

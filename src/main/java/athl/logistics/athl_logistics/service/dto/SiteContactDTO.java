@@ -15,6 +15,11 @@ public class SiteContactDTO {
     private String youtubeUrl;
     private String instagramUrl;
     private String linkedinUrl;
+    private String tiktokUrl;
+    private String contactEmail;
+    private String footerAboutFr;
+    private String footerAboutEn;
+    private String mapLocation;
 
     public SiteContactDTO(SiteContact entity) {
         this.phone1 = entity.getPhone1();
@@ -25,5 +30,10 @@ public class SiteContactDTO {
         this.youtubeUrl = entity.getYoutubeUrl();
         this.instagramUrl = entity.getInstagramUrl();
         this.linkedinUrl = entity.getLinkedinUrl();
+        this.tiktokUrl = entity.getTiktokUrl();
+        this.contactEmail = entity.getContactEmail();
+        this.footerAboutFr = entity.getFooterAboutFr();
+        this.footerAboutEn = entity.getFooterAboutEn();
+        this.mapLocation = entity.getMapLocation();
     }
 }

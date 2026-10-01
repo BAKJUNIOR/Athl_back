@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!--
+        Seed complet de l'application — remplace DataSeeder (supprimé). Chaque changeSet est
+        protégé par une precondition qui vérifie que les lignes ciblées sont encore vides : sur
+        une base existante déjà remplie via le BO, rien n'est écrasé. Sur une base neuve, les
+        tables n'existent pas encore au premier démarrage (Liquibase tourne avant Hibernate)
+        donc tout est ignoré cette fois-ci, puis rejoué au redémarrage suivant une fois
+        qu'Hibernate les a créées. Ordre important : 0002 dépend du rôle créé par 0001.
+    -->
+    <include file="db/changelog/changes/0001-user-roles.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/changes/0002-admin-user.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/changes/0003-about-page-content-seed.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/changes/0004-site-contact.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/changes/0005-partners.xml" relativeToChangelogFile="false"/>
+    <include file="db/changelog/changes/0006-contact-page-content.xml" relativeToChangelogFile="false"/>
+
+</databaseChangeLog>

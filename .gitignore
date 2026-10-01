@@ -3,6 +3,9 @@ HELP.md
 ### Env ###
 .env
 !.env.example
+
+### Base de données locale (jamais en prod, voir compose.local.yaml) ###
+compose.local.yaml
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/

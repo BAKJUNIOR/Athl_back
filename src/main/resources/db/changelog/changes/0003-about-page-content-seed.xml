@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!--
+        Seed complet de la page À propos (about_page_content + ses tables enfants). Remplace
+        l'ancien DataSeeder.seedAboutPage() — retiré, tout passe désormais par Liquibase.
+        Chaque changeSet est protégé par une precondition qui vérifie que la table cible
+        existe déjà (sur une base neuve, Liquibase tourne avant Hibernate donc les tables
+        n'existent pas encore au premier démarrage : tout est ignoré cette fois-ci et sera
+        rejoué au redémarrage suivant, une fois qu'Hibernate les aura créées) et que les
+        lignes ciblées sont encore vides (sur une base déjà remplie via le BO, rien n'est
+        jamais écrasé).
+    -->
+
+    <changeSet id="0001-about-page-content-row" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="about_page_content"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM about_page_content WHERE id = 1</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="about_page_content">
+            <column name="id" valueNumeric="1"/>
+
+            <column name="workforce_eyebrow_fr" value="Bienvenue chez ATHL"/>
+            <column name="workforce_eyebrow_en" value="Welcome to ATHL"/>
+            <column name="workforce_title_fr" value="Nous assumons chaque projet. Nous livrons des résultats plus solides"/>
+            <column name="workforce_title_en" value="We own every project. We deliver sturdier results"/>
+            <column name="workforce_lead_fr" value="Africa Talent Habitat &amp; Logistique réunit des professionnels expérimentés, des méthodes éprouvées et une culture de la responsabilité pour livrer des projets qui traversent le temps. De la construction et la rénovation à la mobilité et à l'importation de matériaux, nos équipes travaillent avec clarté, rigueur et savoir-faire."/>
+            <column name="workforce_lead_en" value="Africa Talent Habitat &amp; Logistics brings together experienced professionals, proven methods and a culture of accountability to deliver projects built to last. From construction and renovation to mobility and the import of materials, our teams work with clarity, rigour and know-how."/>
+
+            <column name="hero_eyebrow_fr" value="À propos"/>
+            <column name="hero_eyebrow_en" value="About"/>
+            <column name="hero_title_fr" value="Africa Talent Habitat &amp; Logistique"/>
+            <column name="hero_title_en" value="Africa Talent Habitat &amp; Logistics"/>
+            <column name="hero_lead_fr" value="L'expertise qui bâtit, la logistique qui accélère. Un groupe ivoirien qui réunit construction, rénovation, mobilité et importation de matériaux."/>
+            <column name="hero_lead_en" value="The expertise that builds, the logistics that accelerate. An Ivorian group bringing together construction, renovation, mobility and the import of materials."/>
+
+            <column name="pillars_eyebrow_fr" value="Ce que nous faisons"/>
+            <column name="pillars_eyebrow_en" value="What we do"/>
+            <column name="pillars_title_fr" value="Nos 3 métiers"/>
+            <column name="pillars_title_en" value="Our 3 core businesses"/>
+            <column name="pillars_lead_fr" value="Un seul partenaire pour bâtir, approvisionner et avancer : construction &amp; rénovation, mobilité, VTC &amp; livraison, import &amp; logistique."/>
+            <column name="pillars_lead_en" value="One partner to build, supply and move forward: construction &amp; renovation, mobility, ride-hailing &amp; delivery, import &amp; logistics."/>
+
+            <column name="team_eyebrow_fr" value="Nos équipes"/>
+            <column name="team_eyebrow_en" value="Our teams"/>
+            <column name="team_title_fr" value="Des visages derrière chaque projet"/>
+            <column name="team_title_en" value="The faces behind every project"/>
+            <column name="team_lead_fr" value="Une direction proche du terrain, joignable et engagée sur chacun de nos chantiers comme sur nos opérations logistiques."/>
+            <column name="team_lead_en" value="A leadership close to the field, reachable and involved on every one of our sites and logistics operations."/>
+
+            <column name="ground_title_fr" value="Nos équipes terrain"/>
+            <column name="ground_title_en" value="Our field teams"/>
+            <column name="ground_lead_fr" value="Ouvriers qualifiés, chefs de chantier, chauffeurs et logisticiens : chaque métier est encadré, formé et suivi. C'est cette organisation qui nous permet de tenir les délais sans transiger sur la sécurité."/>
+            <column name="ground_lead_en" value="Skilled workers, site managers, drivers and logistics staff: every trade is supervised, trained and monitored. This organisation is what lets us meet deadlines without compromising on safety."/>
+            <column name="ground_cta_label_fr" value="Rejoindre nos équipes"/>
+            <column name="ground_cta_label_en" value="Join our teams"/>
+
+            <column name="values_title_fr" value="Ce qui nous engage"/>
+            <column name="values_title_en" value="What drives us"/>
+            <column name="values_background_image" value="images/construction.jpg"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="0002-about-page-workforce-tab-01" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="about_workforce_tabs"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM about_workforce_tabs WHERE about_page_id = 1 AND number = '01'</sqlCheck>
+            </and>
+        </preConditions>
+        <sql splitStatements="false">
+            WITH new_tab AS (
+                INSERT INTO about_workforce_tabs
+                    (about_page_id, number, title_fr, title_en, image, hero_image, lead_fr, lead_en,
+                     bullet1_fr, bullet1_en, bullet2_fr, bullet2_en, bullet3_fr, bullet3_en, bullet4_fr, bullet4_en, sort_order)
+                VALUES
+                    (1, '01', 'Construction &amp; rénovation', 'Construction &amp; renovation',
+                     'images/team-review.jpg', 'images/team-lead.png',
+                     'L''expertise qui bâtit, la logistique qui accélère. ATHL vous accompagne de la construction à la livraison de vos matériaux et solutions de transport.',
+                     'The expertise that builds, the logistics that accelerates. ATHL supports you from construction to delivering your materials and transport solutions.',
+                     'Construction', 'Construction',
+                     'Rénovation &amp; réhabilitation', 'Renovation &amp; rehabilitation',
+                     'Approvisionnement en matériaux', 'Material supply',
+                     'Gestion immobilière', 'Property management',
+                     0)
+                RETURNING id
+            )
+            INSERT INTO about_workforce_stats (tab_id, label_fr, label_en, value, decimals, suffix, sort_order)
+            SELECT new_tab.id, v.label_fr, v.label_en, v.value, v.decimals, v.suffix, v.sort_order
+            FROM new_tab, (VALUES
+                ('Chantiers livrés', 'Sites delivered', 0, 0, '+', 0),
+                ('Valeur de projets', 'Project value', 0, 2, ' M€', 1),
+                ('Valeur d''actifs', 'Asset value', 0, 1, ' M€', 2)
+            ) AS v(label_fr, label_en, value, decimals, suffix, sort_order);
+        </sql>
+    </changeSet>
+
+    <changeSet id="0003-about-page-workforce-tab-02" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="about_workforce_tabs"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM about_workforce_tabs WHERE about_page_id = 1 AND number = '02'</sqlCheck>
+            </and>
+        </preConditions>
+        <sql splitStatements="false">
+            WITH new_tab AS (
+                INSERT INTO about_workforce_tabs
+                    (about_page_id, number, title_fr, title_en, image, hero_image, lead_fr, lead_en,
+                     bullet1_fr, bullet1_en, bullet2_fr, bullet2_en, bullet3_fr, bullet3_en, bullet4_fr, bullet4_en, sort_order)
+                VALUES
+                    (1, '02', 'Mobilité, VTC &amp; Livraison', 'Mobility, ride-hailing &amp; delivery',
+                     'images/pillar-mobility.jpg', 'images/pillar-mobility.jpg',
+                     'Construire l''avenir, accompagner le mouvement. Location de véhicules et solutions de mobilité pour particuliers et entreprises.',
+                     'Building the future, supporting the movement. Vehicle rental and mobility solutions for individuals and businesses.',
+                     'Location courte et longue durée', 'Short and long-term rental',
+                     'Transport professionnel', 'Professional transport',
+                     'Service VTC Premium', 'Premium ride-hailing service',
+                     'Gestion de flotte pour entreprises', 'Fleet management for businesses',
+                     1)
+                RETURNING id
+            )
+            INSERT INTO about_workforce_stats (tab_id, label_fr, label_en, value, decimals, suffix, sort_order)
+            SELECT new_tab.id, v.label_fr, v.label_en, v.value, v.decimals, v.suffix, v.sort_order
+            FROM new_tab, (VALUES
+                ('Véhicules gérés', 'Vehicles managed', 0, 0, '+', 0),
+                ('Courses réalisées', 'Rides completed', 0, 0, '+', 1),
+                ('Chauffeurs actifs', 'Active drivers', 0, 0, '+', 2)
+            ) AS v(label_fr, label_en, value, decimals, suffix, sort_order);
+        </sql>
+    </changeSet>
+
+    <changeSet id="0004-about-page-workforce-tab-03" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="about_workforce_tabs"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM about_workforce_tabs WHERE about_page_id = 1 AND number = '03'</sqlCheck>
+            </and>
+        </preConditions>
+        <sql splitStatements="false">
+            WITH new_tab AS (
+                INSERT INTO about_workforce_tabs
+                    (about_page_id, number, title_fr, title_en, image, hero_image, lead_fr, lead_en,
+                     bullet1_fr, bullet1_en, bullet2_fr, bullet2_en, bullet3_fr, bullet3_en, bullet4_fr, bullet4_en, sort_order)
+                VALUES
+                    (1, '03', 'Import &amp; logistique', 'Import &amp; logistics',
+                     'images/svc-4.png', 'images/hero-1.png',
+                     'Votre partenaire pour bâtir, approvisionner et avancer. Importation directe et distribution de matériaux depuis la Chine, la Turquie, le Maroc et l''Europe.',
+                     'Your partner to build, supply and move forward. Direct import and distribution of materials from China, Turkey, Morocco and Europe.',
+                     'Importation directe', 'Direct import',
+                     'Vente &amp; distribution', 'Sales &amp; distribution',
+                     'Livraison sur chantier', 'Delivery to site',
+                     'Traitement de commandes spéciales', 'Special order handling',
+                     2)
+                RETURNING id
+            )
+            INSERT INTO about_workforce_stats (tab_id, label_fr, label_en, value, decimals, suffix, sort_order)
+            SELECT new_tab.id, v.label_fr, v.label_en, v.value, v.decimals, v.suffix, v.sort_order
+            FROM new_tab, (VALUES
+                ('Conteneurs importés', 'Containers imported', 0, 0, '+', 0),
+                ('Commandes traitées', 'Orders processed', 0, 0, '+', 1),
+                ('Tonnes livrées', 'Tonnes delivered', 0, 0, '+', 2)
+            ) AS v(label_fr, label_en, value, decimals, suffix, sort_order);
+        </sql>
+    </changeSet>
+
+    <changeSet id="0005-about-page-pillars" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="about_pillars"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM about_pillars WHERE about_page_id = 1</sqlCheck>
+            </and>
+        </preConditions>
+        <sql>
+            INSERT INTO about_pillars
+                (about_page_id, title_fr, title_en, image, bullet1_fr, bullet1_en, bullet2_fr, bullet2_en, bullet3_fr, bullet3_en, bullet4_fr, bullet4_en, sort_order)
+            VALUES
+                (1, 'Construction &amp; rénovation', 'Construction &amp; renovation', 'images/chantier2.jpg',
+                 'Construction', 'Construction', 'Rénovation &amp; réhabilitation', 'Renovation &amp; rehabilitation',
+                 'Approvisionnement en matériaux', 'Material supply', 'Gestion immobilière', 'Property management', 0),
+                (1, 'Mobilité, VTC &amp; Livraison', 'Mobility, ride-hailing &amp; delivery', 'images/vtc-mobilite.jpg',
+                 'Location courte et longue durée', 'Short and long-term rental', 'Transport professionnel', 'Professional transport',
+                 'Service VTC Premium', 'Premium ride-hailing service', 'Gestion de flotte pour entreprises', 'Fleet management for businesses', 1),
+                (1, 'Import &amp; logistique', 'Import &amp; logistics', 'images/import3.jpg',
+                 'Importation directe', 'Direct import', 'Vente &amp; distribution', 'Sales &amp; distribution',
+                 'Livraison sur chantier', 'Delivery to site', 'Traitement de commandes spéciales', 'Special order handling', 2);
+        </sql>
+    </changeSet>
+
+    <changeSet id="0006-about-page-ground-images" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="about_ground_images"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM about_ground_images WHERE about_page_id = 1</sqlCheck>
+            </and>
+        </preConditions>
+        <sql>
+            INSERT INTO about_ground_images (about_page_id, sort_order, image_url)
+            VALUES
+                (1, 0, 'images/chantier3.jpg'),
+                (1, 1, 'images/chantier4.jpg'),
+                (1, 2, 'images/construction1.jpg');
+        </sql>
+    </changeSet>
+
+    <changeSet id="0007-about-page-ground-roles" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="about_ground_roles"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM about_ground_roles WHERE about_page_id = 1</sqlCheck>
+            </and>
+        </preConditions>
+        <sql>
+            INSERT INTO about_ground_roles (about_page_id, label_fr, label_en, sort_order)
+            VALUES
+                (1, 'Ouvriers qualifiés', 'Skilled workers', 0),
+                (1, 'Chefs de chantier', 'Site managers', 1),
+                (1, 'Chauffeurs', 'Drivers', 2),
+                (1, 'Logisticiens', 'Logistics staff', 3);
+        </sql>
+    </changeSet>
+
+    <changeSet id="0008-about-page-commitments" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="about_commitments"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM about_commitments WHERE about_page_id = 1</sqlCheck>
+            </and>
+        </preConditions>
+        <sql>
+            INSERT INTO about_commitments (about_page_id, title_fr, title_en, text_fr, text_en, sort_order)
+            VALUES
+                (1, 'Sécurité avant tout', 'Safety first',
+                 'Équipements de protection et procédures strictes sur chaque chantier.',
+                 'Protective equipment and strict procedures on every site.', 0),
+                (1, 'Formation continue', 'Continuous training',
+                 'Chaque métier est formé et suivi tout au long des projets.',
+                 'Every trade is trained and monitored throughout each project.', 1),
+                (1, 'Encadrement de proximité', 'Close supervision',
+                 'Des chefs d''équipe présents sur le terrain, pas seulement sur le papier.',
+                 'Team leaders present on the ground, not just on paper.', 2);
+        </sql>
+    </changeSet>
+
+    <changeSet id="0009-about-page-values" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="about_values"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM about_values WHERE about_page_id = 1</sqlCheck>
+            </and>
+        </preConditions>
+        <sql>
+            INSERT INTO about_values (about_page_id, label_fr, label_en, text_fr, text_en, sort_order)
+            VALUES
+                (1, 'Talent', 'Talent',
+                 'Des équipes qualifiées, formées et encadrées — le premier matériau de chaque projet.',
+                 'Skilled, trained and supervised teams — the first material of every project.', 0),
+                (1, 'Habitat', 'Habitat',
+                 'Construire et rénover des lieux durables, pensés pour ceux qui vont les vivre.',
+                 'Building and renovating lasting places, designed for the people who will live in them.', 1),
+                (1, 'Logistique', 'Logistics',
+                 'Maîtriser la chaîne d''approvisionnement et la mobilité pour tenir les délais.',
+                 'Mastering the supply chain and mobility to keep to deadlines.', 2),
+                (1, 'Sécurité', 'Safety',
+                 'Aucune livraison n''excuse un risque : la sécurité conditionne chaque décision de chantier.',
+                 'No delivery excuses a risk: safety drives every decision on site.', 3);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

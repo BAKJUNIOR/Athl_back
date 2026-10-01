@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!-- Les 2 rôles système (voir enums.RoleName). Doit s'exécuter avant 0002-admin-user.xml,
+         qui a besoin que SUPER_ADMIN existe déjà pour rattacher le compte admin initial. -->
+
+    <changeSet id="insert-role-super-admin" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="roles"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM roles WHERE role_name = 'SUPER_ADMIN'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="roles">
+            <column name="role_name" value="SUPER_ADMIN"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-role-admin" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="roles"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM roles WHERE role_name = 'ADMIN'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="roles">
+            <column name="role_name" value="ADMIN"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

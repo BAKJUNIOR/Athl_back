@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!--
+        Compte administrateur initial. Le mot de passe stocké est un hash BCrypt pré-calculé
+        de "Admin123@" (coût 10, préfixé "{bcrypt}" pour le DelegatingPasswordEncoder — voir
+        SecurityConfig.passwordEncoder()) : Liquibase ne peut pas appeler PasswordEncoder au
+        moment de la migration, donc le hash est figé en dur ici, comme il l'était en clair
+        dans DataSeeder.DEFAULT_ADMIN_PASSWORD avant encodage. Pensez à changer ce mot de passe
+        après le premier déploiement.
+        Dépend de 0001-user-roles.xml (le rôle SUPER_ADMIN doit déjà exister).
+    -->
+
+    <changeSet id="insert-admin-user" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="users"/>
+                <tableExists tableName="roles"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM users WHERE email = 'beugreadroh@gmail.com'</sqlCheck>
+                <sqlCheck expectedResult="1">SELECT COUNT(*) FROM roles WHERE role_name = 'SUPER_ADMIN'</sqlCheck>
+            </and>
+        </preConditions>
+        <sql splitStatements="false">
+            WITH new_user AS (
+                INSERT INTO users (first_name, last_name, email, password, phone_number, profile_picture_url, created_at, is_active)
+                VALUES (
+                    'Beugre', 'Alain', 'beugreadroh@gmail.com',
+                    '{bcrypt}$2b$10$gx.wOfthn5BLeNKop9mCluh60sg8vuGF60PWBB0P6kw5DDcmujyQS',
+                    '+2250777062160',
+                    'https://res.cloudinary.com/drfq0bt4z/image/upload/v1789399962/user-profiles/lrwpczeueh6cjytwlga1.jpg',
+                    now(), true
+                )
+                RETURNING id
+            )
+            INSERT INTO user_roles (user_id, role_id)
+            SELECT new_user.id, roles.id_role FROM new_user, roles WHERE roles.role_name = 'SUPER_ADMIN';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

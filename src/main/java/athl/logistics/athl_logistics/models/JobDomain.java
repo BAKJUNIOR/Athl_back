@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
  * Domaine métier d'une offre d'emploi (ex: Chantier, Logistique...), géré comme une liste
  * ouverte plutôt qu'un enum fixe : la liste des métiers d'ATHL peut évoluer, un admin doit
  * pouvoir en ajouter un nouveau directement depuis le formulaire d'offre, sans déploiement.
- * Quelques valeurs de départ sont seedées (voir DataSeeder) mais n'importe quel admin peut
- * en créer d'autres.
+ * Aucune valeur de départ pré-remplie : la liste démarre vide, un admin la construit depuis le BO.
  */
 @Data
 @NoArgsConstructor
