@@ -245,4 +245,13 @@
         </insert>
     </changeSet>
 
+    <!-- Table orpheline : plus aucun code Java ne la mappe (ancienne itération de
+         ServiceOffering ?), comme "testimonials" avant elle. -->
+    <changeSet id="drop-service-stats-table" author="athl">
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="service_stats"/>
+        </preConditions>
+        <dropTable tableName="service_stats"/>
+    </changeSet>
+
 </databaseChangeLog>
