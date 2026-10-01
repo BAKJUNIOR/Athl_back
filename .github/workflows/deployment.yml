@@ -73,7 +73,11 @@ jobs:
             echo MAIL_PORT="${{ secrets.MAIL_PORT }}" >> /opt/application/athl/${{env.IMAGE}}/.env
             echo MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" >> /opt/application/athl/${{env.IMAGE}}/.env
             echo MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" >> /opt/application/athl/${{env.IMAGE}}/.env
-            docker compose -f /opt/application/athl/${{env.IMAGE}}/compose.yaml up -d
+            echo CLOUDINARY_CLOUD_NAME="${{ secrets.CLOUDINARY_CLOUD_NAME }}" >> /opt/application/athl/${{env.IMAGE}}/.env
+            echo CLOUDINARY_API_KEY="${{ secrets.CLOUDINARY_API_KEY }}" >> /opt/application/athl/${{env.IMAGE}}/.env
+            echo CLOUDINARY_API_SECRET="${{ secrets.CLOUDINARY_API_SECRET }}" >> /opt/application/athl/${{env.IMAGE}}/.env
+            docker compose -f /opt/application/athl/${{env.IMAGE}}/compose.yaml pull
+            docker compose -f /opt/application/athl/${{env.IMAGE}}/compose.yaml up -d --force-recreate
             # .env volontairement laissé en place (pas supprimé) : sinon un simple
             # "docker compose up -d" manuel sur le serveur, hors CI, recrée le conteneur
             # avec des variables vides et le fait planter.
