@@ -254,4 +254,183 @@
         <dropTable tableName="service_stats"/>
     </changeSet>
 
+    <!--
+        Correctif : le changeset "propose-service-logistique-transport" ci-dessus proposait un
+        contenu inventé. La page À propos (voir AboutPageContent.pillars, déjà publiée en prod)
+        définit en réalité 3 métiers : Construction & rénovation (déjà repris plus haut),
+        "Mobilité, VTC & Livraison" et "Import & logistique". On aligne donc ce service sur le
+        vrai pilier "Import & logistique" (texte et photo réels, déjà en ligne) plutôt que de
+        laisser le contenu inventé. Ne modifie pas le changeset déjà exécuté (éviterait une
+        erreur de checksum Liquibase) : corrige la donnée via UPDATE à la place.
+    -->
+    <changeSet id="fix-service-import-logistique" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="services"/>
+                <sqlCheck expectedResult="1">SELECT COUNT(*) FROM services WHERE slug = 'logistique-transport'</sqlCheck>
+            </and>
+        </preConditions>
+        <update tableName="services">
+            <column name="slug" value="import-logistique"/>
+            <column name="title_fr" value="Import &amp; logistique"/>
+            <column name="title_en" value="Import &amp; Logistics"/>
+            <column name="short_title_fr" value="Import"/>
+            <column name="short_title_en" value="Import"/>
+            <column name="lead_fr" value="Un seul partenaire pour approvisionner vos chantiers : importation directe, vente &amp; distribution et livraison, partout en Côte d'Ivoire."/>
+            <column name="lead_en" value="One partner to supply your projects: direct import, sales &amp; distribution and delivery, across Côte d'Ivoire."/>
+            <column name="image" value="https://res.cloudinary.com/olisqkki/image/upload/v1790861031/about-page/nrq7j2ydc0mkqeucyig1.jpg"/>
+            <column name="hero_image" value="https://res.cloudinary.com/olisqkki/image/upload/v1790861031/about-page/nrq7j2ydc0mkqeucyig1.jpg"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <where>slug = 'logistique-transport'</where>
+        </update>
+        <delete tableName="service_prestations">
+            <where>service_id = (SELECT id FROM services WHERE slug = 'import-logistique')</where>
+        </delete>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'import-logistique')"/>
+            <column name="title_fr" value="Importation directe"/>
+            <column name="title_en" value="Direct import"/>
+            <column name="description_fr" value="Achat et importation directe de matériaux et équipements depuis nos zones d'approvisionnement (Europe, Turquie, Maroc, Chine)."/>
+            <column name="description_en" value="Direct purchase and import of materials and equipment from our supply regions (Europe, Turkey, Morocco, China)."/>
+            <column name="sort_order" valueNumeric="1"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'import-logistique')"/>
+            <column name="title_fr" value="Vente &amp; distribution"/>
+            <column name="title_en" value="Sales &amp; distribution"/>
+            <column name="description_fr" value="Mise à disposition et distribution des matériaux importés auprès de nos clients professionnels."/>
+            <column name="description_en" value="Supply and distribution of imported materials to our professional clients."/>
+            <column name="sort_order" valueNumeric="2"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'import-logistique')"/>
+            <column name="title_fr" value="Livraison sur chantier"/>
+            <column name="title_en" value="Delivery to site"/>
+            <column name="description_fr" value="Acheminement des marchandises jusqu'au chantier ou au point de livraison convenu, dans les délais."/>
+            <column name="description_en" value="Delivery of goods to the site or agreed drop-off point, on schedule."/>
+            <column name="sort_order" valueNumeric="3"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'import-logistique')"/>
+            <column name="title_fr" value="Traitement de commandes spéciales"/>
+            <column name="title_en" value="Special order handling"/>
+            <column name="description_fr" value="Prise en charge de commandes spécifiques, hors catalogue standard, sur devis."/>
+            <column name="description_en" value="Handling of specific, off-catalogue orders, on quote."/>
+            <column name="sort_order" valueNumeric="4"/>
+        </insert>
+    </changeSet>
+
+    <!--
+        3e métier réel (voir AboutPageContent.pillars) : "Mobilité, VTC & Livraison". Même
+        précondition que "propose-service-logistique-transport" (sur le slug, pas sur la table
+        vide) : se propose même sur une base déjà remplie, prod comprise, en status DRAFT — jamais
+        visible publiquement avant qu'un admin publie depuis le BO. Photos réelles : celle déjà
+        utilisée sur la page À propos pour ce pilier, et des visuels déjà présents dans le front
+        (images/vtc-mobilite.jpg, images/pillar-mobility.jpg).
+    -->
+    <changeSet id="add-service-mobilite-vtc" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="services"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM services WHERE slug = 'mobilite-vtc-livraison'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="services">
+            <column name="slug" value="mobilite-vtc-livraison"/>
+            <column name="number" value="03"/>
+            <column name="title_fr" value="Mobilité, VTC &amp; Livraison"/>
+            <column name="title_en" value="Mobility, Ride-hailing &amp; Delivery"/>
+            <column name="short_title_fr" value="Mobilité"/>
+            <column name="short_title_en" value="Mobility"/>
+            <column name="lead_fr" value="Des solutions de mobilité fiables pour vos équipes et vos clients : location de véhicules, VTC premium et livraison, en courte comme en longue durée."/>
+            <column name="lead_en" value="Reliable mobility solutions for your teams and clients: vehicle rental, premium ride-hailing and delivery, short or long term."/>
+            <column name="image" value="images/vtc-mobilite.jpg"/>
+            <column name="hero_image" value="https://res.cloudinary.com/olisqkki/image/upload/v1790860737/about-page/qc14rm06vgwywegjd9fw.jpg"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+        <insert tableName="service_gallery">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/vtc-mobilite.jpg"/>
+        </insert>
+        <insert tableName="service_gallery">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/pillar-mobility.jpg"/>
+        </insert>
+
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="title_fr" value="Location courte et longue durée"/>
+            <column name="title_en" value="Short and long-term rental"/>
+            <column name="description_fr" value="Location de véhicules adaptée à vos besoins ponctuels ou réguliers."/>
+            <column name="description_en" value="Vehicle rental tailored to your one-off or recurring needs."/>
+            <column name="sort_order" valueNumeric="1"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="title_fr" value="Transport professionnel"/>
+            <column name="title_en" value="Professional transport"/>
+            <column name="description_fr" value="Transport de personnes et de marchandises pour le compte d'entreprises."/>
+            <column name="description_en" value="Transport of people and goods on behalf of businesses."/>
+            <column name="sort_order" valueNumeric="2"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="title_fr" value="Service VTC Premium"/>
+            <column name="title_en" value="Premium ride-hailing service"/>
+            <column name="description_fr" value="Chauffeurs professionnels et véhicules haut de gamme, à la demande."/>
+            <column name="description_en" value="Professional drivers and premium vehicles, on demand."/>
+            <column name="sort_order" valueNumeric="3"/>
+        </insert>
+        <insert tableName="service_prestations">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="title_fr" value="Gestion de flotte pour entreprises"/>
+            <column name="title_en" value="Fleet management for businesses"/>
+            <column name="description_fr" value="Suivi, entretien et mise à disposition d'une flotte dédiée à votre activité."/>
+            <column name="description_en" value="Tracking, maintenance and provision of a fleet dedicated to your business."/>
+            <column name="sort_order" valueNumeric="4"/>
+        </insert>
+
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="step_number" value="01"/>
+            <column name="title_fr" value="Prise de contact"/>
+            <column name="title_en" value="Initial contact"/>
+            <column name="description_fr" value="Expression du besoin : type de véhicule, durée, trajet."/>
+            <column name="description_en" value="Needs expressed: vehicle type, duration, route."/>
+            <column name="sort_order" valueNumeric="1"/>
+        </insert>
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="step_number" value="02"/>
+            <column name="title_fr" value="Réservation"/>
+            <column name="title_en" value="Booking"/>
+            <column name="description_fr" value="Confirmation du véhicule ou du chauffeur disponible."/>
+            <column name="description_en" value="Confirmation of the available vehicle or driver."/>
+            <column name="sort_order" valueNumeric="2"/>
+        </insert>
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="step_number" value="03"/>
+            <column name="title_fr" value="Prise en charge"/>
+            <column name="title_en" value="Pickup"/>
+            <column name="description_fr" value="Véhicule ou chauffeur mis à disposition à l'heure convenue."/>
+            <column name="description_en" value="Vehicle or driver made available at the agreed time."/>
+            <column name="sort_order" valueNumeric="3"/>
+        </insert>
+        <insert tableName="service_process_steps">
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="step_number" value="04"/>
+            <column name="title_fr" value="Suivi &amp; facturation"/>
+            <column name="title_en" value="Tracking &amp; billing"/>
+            <column name="description_fr" value="Suivi du trajet et facturation claire en fin de prestation."/>
+            <column name="description_en" value="Trip tracking and clear billing at the end of service."/>
+            <column name="sort_order" valueNumeric="4"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
