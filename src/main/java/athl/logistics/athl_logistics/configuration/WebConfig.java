@@ -9,10 +9,15 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        // www.athl-logistique.com est le domaine final visé, mais son DNS ne pointe pas encore
+        // sur le serveur applicatif — site.athl-logistique.com est le domaine réellement utilisé
+        // pour les tests et la présentation en attendant. Les deux restent autorisés pour ne rien
+        // casser le jour où le DNS de www est repointé.
         registry.addMapping("/api/v1/**")
                 .allowedOrigins(
                         "http://localhost:4200", "http://localhost:4201", "http://localhost:4300", "http://localhost:4301",
-                        "https://www.athl-logistique.com", "https://bo.athl-logistique.com")
+                        "https://athl-logistique.com", "https://www.athl-logistique.com", "https://bo.athl-logistique.com",
+                        "https://site.athl-logistique.com")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
