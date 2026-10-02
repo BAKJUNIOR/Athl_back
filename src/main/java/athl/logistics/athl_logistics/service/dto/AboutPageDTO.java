@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Contenu complet de la page /a-propos — lecture (front public) et édition (BO).
 @Data
 @NoArgsConstructor
 public class AboutPageDTO {

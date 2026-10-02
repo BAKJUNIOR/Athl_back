@@ -7,9 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// Contenu de la page /contact du site vitrine. Public en lecture, modification réservée aux
-// admins. Jeu de données fixe : pas de create/delete, un seul PUT global — voir
-// AboutPageController pour le même principe.
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor

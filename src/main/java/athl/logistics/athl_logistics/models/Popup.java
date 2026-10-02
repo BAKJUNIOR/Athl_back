@@ -13,11 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
-/**
- * Popup marketing ciblée sur une page précise du site vitrine (voir Popup côté front/BO).
- * Règle métier : une seule popup active par page à la fois — appliquée dans
- * PopupServiceImpl.activate(), pas ici (une entité ne connaît pas ses "sœurs").
- */
+
 @Data
 @NoArgsConstructor
 @Entity

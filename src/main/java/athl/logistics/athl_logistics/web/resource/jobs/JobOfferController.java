@@ -20,15 +20,12 @@ public class JobOfferController {
 
     private final JobOfferService jobOfferService;
 
-    // Public : publiées uniquement pour un appelant anonyme, tout pour un admin (voir SecurityConfig).
-    // Le front charge toutes les offres (missions/profil compris) en un seul appel — pas de page
-    // détail séparée sur /carrieres, contrairement aux services.
+
     @GetMapping
     public ResponseEntity<List<JobOfferDTO>> list() {
         return ResponseEntity.ok(jobOfferService.list());
     }
 
-    // Admin uniquement : formulaire d'édition du BO (tous statuts).
     @GetMapping("/{id}")
     public ResponseEntity<JobOfferDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(jobOfferService.getById(id));

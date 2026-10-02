@@ -8,10 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-// Upload d'images/vidéos/PDF vers Cloudinary pour le BO. Réservé aux admins : c'est ici,
-// côté serveur, que les identifiants Cloudinary (API_KEY/API_SECRET) sont utilisés — ils ne
-// doivent jamais atteindre le navigateur (voir CloudinaryConfig). Le site public garde son
-// propre flux d'upload direct vers Cloudinary (preset non signé, visiteurs anonymes).
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor

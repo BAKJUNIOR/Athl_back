@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Public : publiés uniquement pour un appelant anonyme, tout pour un admin (voir SecurityConfig).
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/projects")
@@ -27,13 +26,11 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.list());
     }
 
-    // Admin uniquement : formulaire d'édition du BO (accès par id, tous statuts).
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(projectService.getById(id));
     }
 
-    // Public : fiche détail /projets/:slug du site vitrine (publiés uniquement).
     @GetMapping("/slug/{slug}")
     public ResponseEntity<ProjectDTO> getBySlug(@PathVariable String slug) {
         return ResponseEntity.ok(projectService.getBySlug(slug));

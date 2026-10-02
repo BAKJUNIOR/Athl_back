@@ -8,9 +8,7 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// DTO dédié à la liste des utilisateurs côté admin (BO) : contrairement à UserDTO,
-// l'id est exposé volontairement car l'admin en a besoin pour bloquer/débloquer/
-// réinitialiser le mot de passe/supprimer un utilisateur. Le mot de passe n'y figure jamais.
+
 @Data
 @NoArgsConstructor
 public class UserSummaryDTO {

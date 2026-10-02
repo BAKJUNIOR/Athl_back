@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-// Identifiants Cloudinary — toujours côté serveur (CLOUDINARY_API_SECRET ne doit jamais
-// atteindre un navigateur) : le BO envoie le fichier à notre API, qui fait l'upload ici
-// et ne renvoie que l'URL publique — voir UploadController.
+
 @Configuration
 public class CloudinaryConfig {
 

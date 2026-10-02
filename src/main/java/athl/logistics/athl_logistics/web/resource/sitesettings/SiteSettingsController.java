@@ -7,9 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// Réglages du site vitrine : coordonnées/réseaux sociaux. Public en lecture (le front en a
-// besoin pour le footer et la page Contact), modification réservée aux admins. Jeu de
-// données fixe : pas de create/delete, un seul PUT global.
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor

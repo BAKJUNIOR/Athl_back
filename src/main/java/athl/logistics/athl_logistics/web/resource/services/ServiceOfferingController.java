@@ -21,19 +21,16 @@ public class ServiceOfferingController {
 
     private final ServiceOfferingService serviceOfferingService;
 
-    // Public : publiés uniquement pour un appelant anonyme, tout pour un admin (voir SecurityConfig).
     @GetMapping
     public ResponseEntity<List<ServiceSummaryDTO>> list() {
         return ResponseEntity.ok(serviceOfferingService.list());
     }
 
-    // Admin uniquement : formulaire d'édition du BO (accès par id, tous statuts).
     @GetMapping("/{id}")
     public ResponseEntity<ServiceDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(serviceOfferingService.getById(id));
     }
 
-    // Public : page /services/:slug du site vitrine (publiés uniquement).
     @GetMapping("/slug/{slug}")
     public ResponseEntity<ServiceDTO> getBySlug(@PathVariable String slug) {
         return ResponseEntity.ok(serviceOfferingService.getBySlug(slug));

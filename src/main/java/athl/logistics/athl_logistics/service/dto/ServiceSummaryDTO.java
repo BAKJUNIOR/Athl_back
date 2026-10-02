@@ -9,9 +9,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Version allégée pour les listes (BO et front) : pas de galerie ni d'étapes de processus.
-// Les prestations et stats restent incluses — le bloc "Bienvenue chez ATHL" (onglets, accueil
-// et À propos) en a besoin pour les 3 services sans appel supplémentaire par service.
+
 @Data
 @NoArgsConstructor
 public class ServiceSummaryDTO {

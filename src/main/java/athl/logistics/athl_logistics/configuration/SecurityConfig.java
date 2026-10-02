@@ -65,28 +65,19 @@ public class SecurityConfig {
                                         .requestMatchers(HttpMethod.GET, "/api/v1/job-domains").permitAll()
                                         .requestMatchers("/api/v1/job-domains/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                                        // Équipe : liste publique (page Équipe du site), pas de notion de
-                                        // brouillon/publié ici — gestion réservée aux admins.
-                                        // Équipe : les champs quote*/initials servent aussi au carrousel de
-                                        // témoignages de l'accueil (voir TeamMember) — une seule table, pas
-                                        // de ressource /testimonials séparée.
                                         .requestMatchers(HttpMethod.GET, "/api/v1/team").permitAll()
                                         .requestMatchers("/api/v1/team/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                                        // Réalisations/Projets : même principe que Services (liste publique
-                                        // filtrée selon l'authentification), sans détail par slug.
                                         .requestMatchers(HttpMethod.GET, "/api/v1/projects").permitAll()
                                         .requestMatchers(HttpMethod.GET, "/api/v1/projects/slug/**").permitAll()
                                         .requestMatchers("/api/v1/projects/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                                        // Actualités : même principe que Projects (liste publique filtrée
-                                        // selon l'authentification + détail par slug).
+
                                         .requestMatchers(HttpMethod.GET, "/api/v1/news").permitAll()
                                         .requestMatchers(HttpMethod.GET, "/api/v1/news/slug/**").permitAll()
                                         .requestMatchers("/api/v1/news/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                                        // Paramètres du site (coordonnées) : lecture publique
-                                        // (accueil, footer), modification réservée aux admins.
+
                                         .requestMatchers(HttpMethod.GET, "/api/v1/site-settings/contact").permitAll()
                                         .requestMatchers(HttpMethod.PUT, "/api/v1/site-settings/contact").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
@@ -106,8 +97,7 @@ public class SecurityConfig {
                                         .requestMatchers(HttpMethod.GET, "/api/v1/popups").permitAll()
                                         .requestMatchers("/api/v1/popups/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
-                                        // Upload Cloudinary pour le BO (voir UploadController) : jamais public,
-                                        // c'est précisément ce qui garde API_KEY/API_SECRET hors du navigateur.
+
                                         .requestMatchers("/api/v1/uploads").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
 

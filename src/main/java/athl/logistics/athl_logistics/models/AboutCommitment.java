@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// Un des 3 engagements affichés dans "Nos équipes terrain" (ex: Sécurité avant tout).
-// Icône fixe côté front, liée à la position — seuls titre et texte sont éditables.
 @Data
 @NoArgsConstructor
 @Entity

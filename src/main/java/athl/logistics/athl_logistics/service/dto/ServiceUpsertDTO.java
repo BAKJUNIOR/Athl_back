@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-// Payload créer/modifier un service — pas de slug ni d'id : le slug est généré une seule fois
-// par le backend à la création et n'est plus jamais modifiable depuis le BO (voir ServiceOffering).
+
 @Data
 @NoArgsConstructor
 public class ServiceUpsertDTO {

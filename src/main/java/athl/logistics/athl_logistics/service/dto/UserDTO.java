@@ -11,10 +11,7 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// Seul l'endpoint POST /users/register renvoie ce DTO au client (les autres usages sont internes :
-// mapper, service d'e-mail, code d'activation...). id et password restent nécessaires pour cette
-// logique interne (ex: saveActivationCode(userDTO) cherche l'utilisateur par son id), donc on les
-// garde dans la classe mais on les exclut explicitement de la sérialisation JSON de la réponse.
+
 @Slf4j
 @Data
 @AllArgsConstructor

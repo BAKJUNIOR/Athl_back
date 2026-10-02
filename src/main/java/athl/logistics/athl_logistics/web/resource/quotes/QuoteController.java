@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Création publique (formulaire "Demander un devis" du site vitrine), consultation/suivi réservés aux admins.
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/quotes")

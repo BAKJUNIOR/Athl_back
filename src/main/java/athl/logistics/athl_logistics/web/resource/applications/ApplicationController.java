@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Création publique (formulaire de candidature de la page Carrières), consultation/suivi réservés aux admins.
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/applications")

@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// Un des 4 rôles terrain affichés dans "Nos équipes terrain" (ex: Ouvriers qualifiés).
-// Icône fixe côté front, liée à la position — seul le libellé est éditable.
+
 @Data
 @NoArgsConstructor
 @Entity

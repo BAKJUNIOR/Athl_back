@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// Une des 3 cartes "Nos 3 métiers" de la page À propos — image et texte propres à cette
-// page (voir AboutPageContent), pas liés à ServiceOffering même si la carte se ressemble.
 @Data
 @NoArgsConstructor
 @Entity
