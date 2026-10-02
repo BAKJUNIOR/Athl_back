@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!--
+        Projects (voir Project) : page /projets (groupée par métier) et sa fiche détail
+        /projets/:slug. Ajoute slug, lien vers le métier (service_id), localisation/typologie/
+        année/description, galerie — retire caption_fr/en et wide, remplacés par ce nouveau
+        modèle. Seed avec 9 projets de démonstration en status DRAFT (jamais visibles
+        publiquement avant publication côté BO) : contenu fictif à relire/remplacer, utilisé
+        pour valider la vue avant la vraie saisie.
+    -->
+
+    <changeSet id="add-project-columns" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="projects"/>
+                <not>
+                    <columnExists tableName="projects" columnName="slug"/>
+                </not>
+            </and>
+        </preConditions>
+        <addColumn tableName="projects">
+            <column name="slug" type="VARCHAR(255)"/>
+            <column name="service_id" type="BIGINT"/>
+            <column name="location_fr" type="VARCHAR(255)"/>
+            <column name="location_en" type="VARCHAR(255)"/>
+            <column name="typology_fr" type="VARCHAR(255)"/>
+            <column name="typology_en" type="VARCHAR(255)"/>
+            <column name="year" type="VARCHAR(255)"/>
+            <column name="description_fr" type="TEXT"/>
+            <column name="description_en" type="TEXT"/>
+            <column name="sort_order" type="INT" defaultValueNumeric="0"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="projects" baseColumnNames="service_id"
+                                  referencedTableName="services" referencedColumnNames="id"
+                                  constraintName="fk_projects_service"/>
+        <addUniqueConstraint tableName="projects" columnNames="slug" constraintName="uc_projects_slug"/>
+    </changeSet>
+
+    <changeSet id="drop-project-caption-wide-columns" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="projects"/>
+                <columnExists tableName="projects" columnName="caption_fr"/>
+            </and>
+        </preConditions>
+        <dropColumn tableName="projects" columnName="caption_fr"/>
+        <dropColumn tableName="projects" columnName="caption_en"/>
+        <dropColumn tableName="projects" columnName="wide"/>
+    </changeSet>
+
+    <changeSet id="seed-projects" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="projects"/>
+                <columnExists tableName="projects" columnName="slug"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM projects</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="projects">
+            <column name="slug" value="villa-les-rivages"/>
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="title_fr" value="Villa Les Rivages"/>
+            <column name="title_en" value="Villa Les Rivages"/>
+            <column name="location_fr" value="Cocody, Abidjan"/>
+            <column name="location_en" value="Cocody, Abidjan"/>
+            <column name="typology_fr" value="Villa"/>
+            <column name="typology_en" value="Villa"/>
+            <column name="year" value="2023"/>
+            <column name="description_fr" value="Construction neuve d'une villa R+1 à Cocody, pensée pour une famille recherchant à la fois intimité et ouverture sur l'extérieur. Le chantier a couvert le terrassement, le gros œuvre et les finitions, livrés clé en main.&#10;&#10;Une attention particulière a été portée à la gestion des délais malgré la saison des pluies, grâce à une planification serrée des équipes et des approvisionnements. Le résultat : une livraison conforme au calendrier initial."/>
+            <column name="description_en" value="New-build R+1 villa in Cocody, designed for a family seeking both privacy and openness to the outdoors. The site covered groundwork, structural works and finishing, delivered turnkey.&#10;&#10;Particular attention was paid to schedule management despite the rainy season, thanks to tight planning of crews and supplies. The result: a handover that met the original timeline."/>
+            <column name="image" value="images/proj-1.png"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="projects">
+            <column name="slug" value="residence-koumassi"/>
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="title_fr" value="Résidence Koumassi"/>
+            <column name="title_en" value="Koumassi Residence"/>
+            <column name="location_fr" value="Koumassi, Abidjan"/>
+            <column name="location_en" value="Koumassi, Abidjan"/>
+            <column name="typology_fr" value="Immeuble résidentiel"/>
+            <column name="typology_en" value="Residential building"/>
+            <column name="year" value="2022"/>
+            <column name="description_fr" value="Immeuble résidentiel R+3 de 12 logements à Koumassi, livré pour un promoteur privé. ATHL a assuré le gros œuvre complet ainsi que l'approvisionnement en matériaux tout au long du chantier.&#10;&#10;Un chef de chantier dédié a supervisé les équipes au quotidien, avec un contrôle qualité continu à chaque étape — structure, cloisons, réseaux — jusqu'à la réception finale."/>
+            <column name="description_en" value="12-unit R+3 residential building in Koumassi, delivered for a private developer. ATHL handled the full structural works as well as materials sourcing throughout the project.&#10;&#10;A dedicated site manager supervised the teams daily, with ongoing quality control at every stage — structure, partitions, utilities — through to final handover."/>
+            <column name="image" value="images/proj-2.png"/>
+            <column name="sort_order" valueNumeric="2"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="projects">
+            <column name="slug" value="tour-plateau-affaires"/>
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="title_fr" value="Tour Plateau Affaires"/>
+            <column name="title_en" value="Plateau Business Tower"/>
+            <column name="location_fr" value="Plateau, Abidjan"/>
+            <column name="location_en" value="Plateau, Abidjan"/>
+            <column name="typology_fr" value="Immeuble de bureaux"/>
+            <column name="typology_en" value="Office building"/>
+            <column name="year" value="2024"/>
+            <column name="description_fr" value="Réhabilitation complète d'un immeuble de bureaux au Plateau : mise aux normes électriques, nouvelles façades et réaménagement intérieur des plateaux pour s'adapter aux usages actuels.&#10;&#10;Le chantier s'est déroulé en site occupé par phases, pour permettre aux locataires déjà installés de continuer leur activité sans interruption pendant les travaux."/>
+            <column name="description_en" value="Full refurbishment of an office building in Plateau: electrical upgrades, new façades and interior reconfiguration of the floors to match current usage.&#10;&#10;The works were carried out in an occupied building, phase by phase, so existing tenants could keep working without interruption during construction."/>
+            <column name="image" value="images/proj-4.png"/>
+            <column name="sort_order" valueNumeric="3"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="projects">
+            <column name="slug" value="villa-riviera-golf"/>
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'construction')"/>
+            <column name="title_fr" value="Villa Riviera Golf"/>
+            <column name="title_en" value="Riviera Golf Villa"/>
+            <column name="location_fr" value="Riviera Golf, Abidjan"/>
+            <column name="location_en" value="Riviera Golf, Abidjan"/>
+            <column name="typology_fr" value="Villa"/>
+            <column name="typology_en" value="Villa"/>
+            <column name="year" value="2021"/>
+            <column name="description_fr" value="Villa de standing en bordure du golf de la Riviera, construite sur deux niveaux avec piscine et jardin paysager. Le projet a été mené en co-conception avec un cabinet d'architecture local.&#10;&#10;ATHL a pris en charge l'ensemble du second œuvre et les finitions haut de gamme, dans le respect strict du cahier des charges esthétique du client."/>
+            <column name="description_en" value="High-end villa by the Riviera Golf course, built over two levels with a pool and landscaped garden. The project was co-designed with a local architecture firm.&#10;&#10;ATHL handled all the finishing works to a high-end standard, strictly following the client's design brief."/>
+            <column name="image" value="images/card-construction.jpg"/>
+            <column name="sort_order" valueNumeric="4"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="projects">
+            <column name="slug" value="entrepot-vridi"/>
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'import-logistique')"/>
+            <column name="title_fr" value="Entrepôt Vridi"/>
+            <column name="title_en" value="Vridi Warehouse"/>
+            <column name="location_fr" value="Zone portuaire, Abidjan"/>
+            <column name="location_en" value="Port area, Abidjan"/>
+            <column name="typology_fr" value="Entrepôt logistique"/>
+            <column name="typology_en" value="Logistics warehouse"/>
+            <column name="year" value="2023"/>
+            <column name="description_fr" value="Mise en place d'un entrepôt de stockage de 2 000 m² près du port d'Abidjan, pour centraliser la réception et la redistribution de matériaux importés vers nos chantiers.&#10;&#10;L'organisation du site a été pensée pour fluidifier le déchargement des conteneurs et réduire les délais entre arrivée de marchandise et départ vers les chantiers clients."/>
+            <column name="description_en" value="Set-up of a 2,000 m² storage warehouse near the port of Abidjan, to centralize the receiving and redistribution of imported materials to our project sites.&#10;&#10;The site layout was designed to speed up container unloading and reduce the time between goods arrival and dispatch to client sites."/>
+            <column name="image" value="images/import.jpg"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="projects">
+            <column name="slug" value="hub-importation-yopougon"/>
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'import-logistique')"/>
+            <column name="title_fr" value="Hub d'importation Yopougon"/>
+            <column name="title_en" value="Yopougon Import Hub"/>
+            <column name="location_fr" value="Yopougon, Abidjan"/>
+            <column name="location_en" value="Yopougon, Abidjan"/>
+            <column name="typology_fr" value="Plateforme de stockage"/>
+            <column name="typology_en" value="Storage platform"/>
+            <column name="year" value="2022"/>
+            <column name="description_fr" value="Plateforme de stockage et de distribution de matériaux importés (acier, équipements, finitions) pour approvisionner plusieurs chantiers simultanément dans la zone ouest d'Abidjan.&#10;&#10;Un système de suivi des stocks a été mis en place pour donner une visibilité en temps réel sur les volumes disponibles à chaque chef de chantier."/>
+            <column name="description_en" value="Storage and distribution platform for imported materials (steel, equipment, finishings) to supply several sites simultaneously in western Abidjan.&#10;&#10;A stock-tracking system was put in place to give each site manager real-time visibility on available volumes."/>
+            <column name="image" value="images/import3.jpg"/>
+            <column name="sort_order" valueNumeric="2"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="projects">
+            <column name="slug" value="livraison-chantier-chu"/>
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'import-logistique')"/>
+            <column name="title_fr" value="Approvisionnement chantier CHU"/>
+            <column name="title_en" value="Hospital Site Supply"/>
+            <column name="location_fr" value="Treichville, Abidjan"/>
+            <column name="location_en" value="Treichville, Abidjan"/>
+            <column name="typology_fr" value="Approvisionnement chantier"/>
+            <column name="typology_en" value="Site supply"/>
+            <column name="year" value="2024"/>
+            <column name="description_fr" value="Organisation de l'approvisionnement complet en matériaux d'un chantier hospitalier à Treichville, avec des contraintes fortes de délais et de traçabilité.&#10;&#10;Chaque livraison a été planifiée pour ne pas perturber l'activité du site, déjà partiellement en service pendant les travaux."/>
+            <column name="description_en" value="Full materials supply organization for a hospital construction site in Treichville, under tight deadline and traceability requirements.&#10;&#10;Every delivery was scheduled so as not to disrupt site activity, already partly in service during the works."/>
+            <column name="image" value="images/import2.jpg"/>
+            <column name="sort_order" valueNumeric="3"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="projects">
+            <column name="slug" value="flotte-entreprise-partenaire"/>
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="title_fr" value="Flotte dédiée — Partenaire industriel"/>
+            <column name="title_en" value="Dedicated Fleet — Industrial Partner"/>
+            <column name="location_fr" value="Abidjan"/>
+            <column name="location_en" value="Abidjan"/>
+            <column name="typology_fr" value="Gestion de flotte"/>
+            <column name="typology_en" value="Fleet management"/>
+            <column name="year" value="2024"/>
+            <column name="description_fr" value="Mise à disposition et gestion d'une flotte de véhicules dédiée pour les déplacements quotidiens des équipes d'un partenaire industriel basé à Abidjan.&#10;&#10;ATHL assure l'entretien, le suivi kilométrique et le remplacement des véhicules, pour une disponibilité continue sans gestion interne côté client."/>
+            <column name="description_en" value="Provision and management of a dedicated vehicle fleet for the daily travel needs of an industrial partner's teams based in Abidjan.&#10;&#10;ATHL handles maintenance, mileage tracking and vehicle replacement, ensuring continuous availability with no internal management needed on the client side."/>
+            <column name="image" value="images/vtc-mobilite.jpg"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="projects">
+            <column name="slug" value="deploiement-vtc-premium"/>
+            <column name="service_id" valueComputed="(SELECT id FROM services WHERE slug = 'mobilite-vtc-livraison')"/>
+            <column name="title_fr" value="Déploiement VTC Premium"/>
+            <column name="title_en" value="Premium Ride-hailing Rollout"/>
+            <column name="location_fr" value="Cocody, Abidjan"/>
+            <column name="location_en" value="Cocody, Abidjan"/>
+            <column name="typology_fr" value="Service VTC"/>
+            <column name="typology_en" value="Ride-hailing service"/>
+            <column name="year" value="2023"/>
+            <column name="description_fr" value="Lancement d'un service de VTC premium sur Abidjan, avec chauffeurs professionnels et véhicules haut de gamme, pour une clientèle d'affaires et d'hôtellerie.&#10;&#10;Le service a été conçu pour garantir ponctualité et discrétion, avec réservation à l'avance pour les trajets réguliers."/>
+            <column name="description_en" value="Launch of a premium ride-hailing service in Abidjan, with professional drivers and premium vehicles, for a business and hospitality clientele.&#10;&#10;The service was designed to guarantee punctuality and discretion, with advance booking available for recurring trips."/>
+            <column name="image" value="images/pillar-mobility.jpg"/>
+            <column name="sort_order" valueNumeric="2"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="seed-project-gallery" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="project_gallery"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM project_gallery</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'villa-les-rivages')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/proj-1.png"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'villa-les-rivages')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/construction1.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'villa-les-rivages')"/>
+            <column name="sort_order" valueNumeric="2"/>
+            <column name="image_url" value="images/chantier3.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'residence-koumassi')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/proj-2.png"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'residence-koumassi')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/chantier4.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'residence-koumassi')"/>
+            <column name="sort_order" valueNumeric="2"/>
+            <column name="image_url" value="images/chantier5.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'tour-plateau-affaires')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/proj-4.png"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'tour-plateau-affaires')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/construction.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'tour-plateau-affaires')"/>
+            <column name="sort_order" valueNumeric="2"/>
+            <column name="image_url" value="images/chantier2.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'villa-riviera-golf')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/card-construction.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'villa-riviera-golf')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/construction1.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'entrepot-vridi')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/import.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'entrepot-vridi')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/import2.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'hub-importation-yopougon')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/import3.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'hub-importation-yopougon')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/import.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'livraison-chantier-chu')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/import2.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'livraison-chantier-chu')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/import3.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'flotte-entreprise-partenaire')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/vtc-mobilite.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'flotte-entreprise-partenaire')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/pillar-mobility.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'deploiement-vtc-premium')"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/pillar-mobility.jpg"/>
+        </insert>
+        <insert tableName="project_gallery">
+            <column name="project_id" valueComputed="(SELECT id FROM projects WHERE slug = 'deploiement-vtc-premium')"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/vtc-mobilite.jpg"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -76,6 +76,7 @@ public class SecurityConfig {
                                         // Réalisations/Projets : même principe que Services (liste publique
                                         // filtrée selon l'authentification), sans détail par slug.
                                         .requestMatchers(HttpMethod.GET, "/api/v1/projects").permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/api/v1/projects/slug/**").permitAll()
                                         .requestMatchers("/api/v1/projects/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
                                         // Paramètres du site (coordonnées) : lecture publique

@@ -2,6 +2,7 @@ package athl.logistics.athl_logistics.web.resource.projects;
 
 import athl.logistics.athl_logistics.service.ProjectService;
 import athl.logistics.athl_logistics.service.dto.ProjectDTO;
+import athl.logistics.athl_logistics.service.dto.ProjectSummaryDTO;
 import athl.logistics.athl_logistics.service.dto.ProjectUpsertDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,20 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping
-    public ResponseEntity<List<ProjectDTO>> list() {
+    public ResponseEntity<List<ProjectSummaryDTO>> list() {
         return ResponseEntity.ok(projectService.list());
+    }
+
+    // Admin uniquement : formulaire d'édition du BO (accès par id, tous statuts).
+    @GetMapping("/{id}")
+    public ResponseEntity<ProjectDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(projectService.getById(id));
+    }
+
+    // Public : fiche détail /projets/:slug du site vitrine (publiés uniquement).
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<ProjectDTO> getBySlug(@PathVariable String slug) {
+        return ResponseEntity.ok(projectService.getBySlug(slug));
     }
 
     @PostMapping
