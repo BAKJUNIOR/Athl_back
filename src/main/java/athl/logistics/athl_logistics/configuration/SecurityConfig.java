@@ -93,6 +93,9 @@ public class SecurityConfig {
                                         .requestMatchers(HttpMethod.GET, "/api/v1/about-page").permitAll()
                                         .requestMatchers(HttpMethod.PUT, "/api/v1/about-page").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
+                                        .requestMatchers(HttpMethod.GET, "/api/v1/home-page").permitAll()
+                                        .requestMatchers(HttpMethod.PUT, "/api/v1/home-page").hasAnyRole("SUPER_ADMIN", "ADMIN")
+
                                         .requestMatchers(HttpMethod.GET, "/api/v1/partners").permitAll()
                                         .requestMatchers(HttpMethod.PUT, "/api/v1/partners").hasAnyRole("SUPER_ADMIN", "ADMIN")
 

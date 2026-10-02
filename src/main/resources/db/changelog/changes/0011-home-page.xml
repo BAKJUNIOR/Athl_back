@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+
+
+    <changeSet id="seed-home-page-content" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="home_page_content"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM home_page_content</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="home_page_content">
+            <column name="id" valueNumeric="1"/>
+            <column name="hero_title_line1_fr" value="L'expertise qui bâtit."/>
+            <column name="hero_title_line1_en" value="The expertise that builds."/>
+            <column name="hero_title_line2_fr" value="La logistique qui accélère."/>
+            <column name="hero_title_line2_en" value="The logistics that accelerate."/>
+            <column name="hero_subtitle_fr" value="Africa Talent Habitat &amp; Logistique : des équipes qualifiées, des méthodes éprouvées et une chaîne d'approvisionnement maîtrisée, du premier plan à la livraison."/>
+            <column name="hero_subtitle_en" value="Africa Talent Habitat &amp; Logistics: skilled teams, proven methods and a tightly managed supply chain, from the first drawing to delivery."/>
+            <column name="pillar_construction_lead_fr" value="Chantiers neufs, rénovations, approvisionnement : nos équipes mènent vos travaux du premier coup de pioche à la livraison."/>
+            <column name="pillar_construction_lead_en" value="New builds, renovations, materials supply: our teams run your projects from first dig to handover."/>
+            <column name="pillar_construction_image" value="images/card-construction.jpg"/>
+            <column name="pillar_mobility_lead_fr" value="Véhicules, chauffeurs, livraisons : des solutions de mobilité fiables pour vos trajets, professionnels comme personnels."/>
+            <column name="pillar_mobility_lead_en" value="Vehicles, drivers, deliveries: reliable mobility solutions for your trips, professional or personal."/>
+            <column name="pillar_mobility_image" value="images/pillar-mobility.jpg"/>
+            <column name="pillar_import_lead_fr" value="De la Chine à l'Europe jusqu'à vos chantiers : nous importons et livrons vos matériaux de A à Z."/>
+            <column name="pillar_import_lead_en" value="From China and Europe to your site: we import and deliver your materials end to end."/>
+            <column name="pillar_import_image" value="images/import.jpg"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="seed-home-hero-images" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="home_hero_images"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM home_hero_images</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="home_hero_images">
+            <column name="home_page_id" valueNumeric="1"/>
+            <column name="sort_order" valueNumeric="0"/>
+            <column name="image_url" value="images/hero-cover.jpg"/>
+        </insert>
+        <insert tableName="home_hero_images">
+            <column name="home_page_id" valueNumeric="1"/>
+            <column name="sort_order" valueNumeric="1"/>
+            <column name="image_url" value="images/bg-2.jpg"/>
+        </insert>
+        <insert tableName="home_hero_images">
+            <column name="home_page_id" valueNumeric="1"/>
+            <column name="sort_order" valueNumeric="2"/>
+            <column name="image_url" value="images/bg-1.jpg"/>
+        </insert>
+        <insert tableName="home_hero_images">
+            <column name="home_page_id" valueNumeric="1"/>
+            <column name="sort_order" valueNumeric="3"/>
+            <column name="image_url" value="images/bg-3.jpg"/>
+        </insert>
+        <insert tableName="home_hero_images">
+            <column name="home_page_id" valueNumeric="1"/>
+            <column name="sort_order" valueNumeric="4"/>
+            <column name="image_url" value="images/bg-4.jpg"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
