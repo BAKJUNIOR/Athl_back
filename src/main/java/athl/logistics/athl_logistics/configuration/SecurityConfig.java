@@ -106,6 +106,8 @@ public class SecurityConfig {
                                         .requestMatchers(HttpMethod.POST, "/api/v1/applications").permitAll()
                                         .requestMatchers("/api/v1/applications/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
+                                        .requestMatchers("/api/v1/dashboard/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+
                                         .requestMatchers("/ws/**").permitAll() // connexions WebSocket
                                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                         .anyRequest().authenticated()

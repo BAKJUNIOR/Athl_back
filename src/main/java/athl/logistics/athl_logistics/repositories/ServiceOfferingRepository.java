@@ -12,5 +12,7 @@ public interface ServiceOfferingRepository extends JpaRepository<ServiceOffering
 
     List<ServiceOffering> findByStatus(ServiceStatus status);
 
+    long countByStatus(ServiceStatus status);
+
     Optional<ServiceOffering> findBySlugAndStatus(String slug, ServiceStatus status);
 }
