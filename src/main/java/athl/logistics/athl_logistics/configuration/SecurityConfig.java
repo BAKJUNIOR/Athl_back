@@ -79,6 +79,12 @@ public class SecurityConfig {
                                         .requestMatchers(HttpMethod.GET, "/api/v1/projects/slug/**").permitAll()
                                         .requestMatchers("/api/v1/projects/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
+                                        // Actualités : même principe que Projects (liste publique filtrée
+                                        // selon l'authentification + détail par slug).
+                                        .requestMatchers(HttpMethod.GET, "/api/v1/news").permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/api/v1/news/slug/**").permitAll()
+                                        .requestMatchers("/api/v1/news/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
+
                                         // Paramètres du site (coordonnées) : lecture publique
                                         // (accueil, footer), modification réservée aux admins.
                                         .requestMatchers(HttpMethod.GET, "/api/v1/site-settings/contact").permitAll()

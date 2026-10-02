@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!--
+        News (voir NewsArticle) : page /actualites et sa fiche détail /actualites/:slug. Table
+        neuve, créée par Hibernate (ddl-auto=update) comme team_members/services/projects à
+        l'origine. seed-news sème les 6 actualités qui étaient en dur côté front (news.data.ts,
+        déjà annotées "exemples à remplacer par de vraies nouvelles ATHL"), en status DRAFT pour
+        relecture/publication côté BO avant toute mise en ligne. add-news-social-link-columns
+        ajoute les 3 champs de republication (Facebook/LinkedIn/YouTube) saisis à la main par
+        article dans le BO.
+    -->
+
+    <changeSet id="add-news-social-link-columns" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="news_articles"/>
+                <not>
+                    <columnExists tableName="news_articles" columnName="facebook_url"/>
+                </not>
+            </and>
+        </preConditions>
+        <addColumn tableName="news_articles">
+            <column name="facebook_url" type="VARCHAR(255)"/>
+            <column name="linkedin_url" type="VARCHAR(255)"/>
+            <column name="youtube_url" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="seed-news" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="news_articles"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM news_articles</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="news_articles">
+            <column name="slug" value="livraison-chantier-abidjan"/>
+            <column name="image" value="images/proj-2.png"/>
+            <column name="date" valueDate="2026-08-20"/>
+            <column name="featured" valueBoolean="true"/>
+            <column name="category_fr" value="Chantiers"/>
+            <column name="category_en" value="Sites"/>
+            <column name="title_fr" value="Livraison d'un nouveau chantier à Abidjan"/>
+            <column name="title_en" value="Delivery of a new site in Abidjan"/>
+            <column name="excerpt_fr" value="Structure métallique et levage : un chantier livré dans les délais, sans incident, par nos équipes BTP."/>
+            <column name="excerpt_en" value="Steel structure and lifting: a site delivered on schedule, incident-free, by our construction teams."/>
+            <column name="body_fr" value="Nos équipes BTP viennent de livrer un nouveau chantier de structure métallique à Abidjan, dans les délais fixés avec le client et sans le moindre incident de sécurité.&#10;&#10;Le projet a mobilisé chefs de chantier, ouvriers qualifiés et équipes de levage pendant plusieurs mois, avec un suivi quotidien de la planification et de la sécurité sur site.&#10;&#10;Cette livraison illustre l'organisation qui structure chacun de nos chantiers : un encadrement resserré, des méthodes éprouvées et une coordination constante avec nos équipes logistiques pour l'approvisionnement en matériaux."/>
+            <column name="quote_text_fr" value="Tenir les délais sans transiger sur la sécurité, c'est exactement ce que nos équipes ont démontré sur ce chantier."/>
+            <column name="quote_name_fr" value="Direction des opérations"/>
+            <column name="quote_role_fr" value="ATHL — Pôle Construction &amp; rénovation"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="news_articles">
+            <column name="slug" value="flotte-mobilite-vtc"/>
+            <column name="image" value="images/pillar-mobility.jpg"/>
+            <column name="date" valueDate="2026-07-14"/>
+            <column name="featured" valueBoolean="true"/>
+            <column name="category_fr" value="Mobilité &amp; VTC"/>
+            <column name="category_en" value="Mobility &amp; ride-hailing"/>
+            <column name="title_fr" value="ATHL renforce sa flotte Mobilité &amp; VTC"/>
+            <column name="title_en" value="ATHL expands its Mobility &amp; ride-hailing fleet"/>
+            <column name="excerpt_fr" value="De nouveaux véhicules pour accompagner la demande croissante de nos clients particuliers et entreprises."/>
+            <column name="excerpt_en" value="New vehicles to support growing demand from our individual and corporate clients."/>
+            <column name="body_fr" value="Face à la demande croissante de nos clients particuliers et entreprises, ATHL renforce sa flotte dédiée à la mobilité et au transport VTC.&#10;&#10;Les nouveaux véhicules viennent élargir notre capacité de location et de mise à disposition de chauffeurs, tout en maintenant le niveau d'entretien et de suivi qui caractérise notre flotte.&#10;&#10;Cet investissement s'inscrit dans la continuité de notre pôle Mobilité, pensé pour accompagner aussi bien les déplacements professionnels que les besoins ponctuels de nos clients."/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="news_articles">
+            <column name="slug" value="recrutement-chantiers"/>
+            <column name="image" value="images/card-construction.jpg"/>
+            <column name="date" valueDate="2026-06-02"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="category_fr" value="Recrutement"/>
+            <column name="category_en" value="Careers"/>
+            <column name="title_fr" value="Nouvelle campagne de recrutement sur nos chantiers"/>
+            <column name="title_en" value="New hiring campaign across our sites"/>
+            <column name="excerpt_fr" value="Ouvriers qualifiés, chefs de chantier, chauffeurs : ATHL recrute pour accompagner sa croissance."/>
+            <column name="excerpt_en" value="Skilled workers, site managers, drivers: ATHL is hiring to support its growth."/>
+            <column name="body_fr" value="ATHL ouvre une nouvelle campagne de recrutement pour renforcer ses équipes terrain : ouvriers qualifiés, chefs de chantier, chauffeurs et logisticiens.&#10;&#10;Chaque poste est encadré dès l'intégration, avec une formation aux méthodes et aux règles de sécurité qui structurent nos chantiers comme nos opérations logistiques.&#10;&#10;Les candidatures sont ouvertes dès maintenant sur notre page Carrières."/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="news_articles">
+            <column name="slug" value="import-nouveaux-partenaires"/>
+            <column name="image" value="images/proj-5.png"/>
+            <column name="date" valueDate="2026-05-11"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="category_fr" value="Import &amp; logistique"/>
+            <column name="category_en" value="Import &amp; logistics"/>
+            <column name="title_fr" value="Import &amp; logistique : nouveaux partenaires en Chine et en Turquie"/>
+            <column name="title_en" value="Import &amp; logistics: new partners in China and Turkey"/>
+            <column name="excerpt_fr" value="ATHL élargit son réseau d'approvisionnement pour sécuriser les délais de livraison de matériaux."/>
+            <column name="excerpt_en" value="ATHL expands its sourcing network to secure material delivery lead times."/>
+            <column name="body_fr" value="ATHL élargit son réseau de fournisseurs avec de nouveaux partenaires en Chine et en Turquie, dans la continuité de ses opérations d'importation directe de matériaux.&#10;&#10;Cet élargissement vise à sécuriser les délais de livraison et à diversifier les sources d'approvisionnement pour nos chantiers comme pour nos clients.&#10;&#10;Notre chaîne d'approvisionnement reste pilotée depuis Abidjan, du premier contact fournisseur jusqu'à la livraison finale."/>
+            <column name="quote_text_fr" value="Diversifier nos partenaires à l'import, c'est garantir à nos clients des délais tenus, même quand la demande augmente."/>
+            <column name="quote_name_fr" value="Direction Import &amp; logistique"/>
+            <column name="quote_role_fr" value="ATHL — Pôle Import &amp; logistique"/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="news_articles">
+            <column name="slug" value="securite-chantiers-bilan"/>
+            <column name="image" value="images/bg-2.jpg"/>
+            <column name="date" valueDate="2026-04-03"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="category_fr" value="Entreprise"/>
+            <column name="category_en" value="Company"/>
+            <column name="title_fr" value="Sécurité sur nos chantiers : le bilan de l'année"/>
+            <column name="title_en" value="Site safety: this year's results"/>
+            <column name="excerpt_fr" value="Formations, équipements et encadrement renforcé : où en est ATHL sur la sécurité de ses équipes terrain."/>
+            <column name="excerpt_en" value="Training, equipment and closer supervision: where ATHL stands on field-team safety."/>
+            <column name="body_fr" value="La sécurité de nos équipes terrain reste une priorité constante : équipements de protection, formations régulières et encadrement resserré sur chaque chantier.&#10;&#10;Cette rigueur est ce qui nous permet de tenir nos délais sans jamais transiger sur la sécurité de nos ouvriers, chefs de chantier, chauffeurs et logisticiens."/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="news_articles">
+            <column name="slug" value="nouveau-depot-materiaux"/>
+            <column name="image" value="images/proj-1.png"/>
+            <column name="date" valueDate="2026-02-18"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="category_fr" value="Chantiers"/>
+            <column name="category_en" value="Sites"/>
+            <column name="title_fr" value="Ouverture d'un nouveau dépôt de matériaux à Abidjan"/>
+            <column name="title_en" value="A new materials depot opens in Abidjan"/>
+            <column name="excerpt_fr" value="Un espace de stockage supplémentaire pour fluidifier l'approvisionnement de nos chantiers."/>
+            <column name="excerpt_en" value="Extra storage capacity to streamline supply to our sites."/>
+            <column name="body_fr" value="ATHL ouvre un nouveau dépôt de matériaux à Abidjan, pensé pour raccourcir les délais entre réception des importations et livraison sur chantier.&#10;&#10;Ce nouvel espace vient compléter notre chaîne logistique, du port jusqu'au dernier kilomètre."/>
+            <column name="status" value="DRAFT"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
