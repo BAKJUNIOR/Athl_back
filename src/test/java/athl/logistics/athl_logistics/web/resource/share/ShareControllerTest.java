@@ -51,7 +51,9 @@ class ShareControllerTest {
                 .contains("<meta property=\"og:title\" content=\"ATHL renforce sa flotte Mobilité &amp; VTC\">")
                 .contains("<meta property=\"og:description\" content=\"Face à la demande croissante de nos clients.\">")
                 .contains("<meta property=\"og:image\" content=\"https://res.cloudinary.com/demo/image/upload/c_fill,g_auto,w_1200,h_630,q_auto,f_jpg/v1/news/vtc.jpg\">")
-                .contains("<meta property=\"og:url\" content=\"https://site.athl-logistique.com/actualites/flotte-mobilite-vtc\">");
+                .contains("<meta property=\"og:url\" content=\"https://site.athl-logistique.com/actualites/flotte-mobilite-vtc\">")
+                .contains("<meta property=\"og:image:width\" content=\"1200\">")
+                .contains("<meta property=\"og:image:height\" content=\"630\">");
     }
 
     @Test
@@ -67,7 +69,8 @@ class ShareControllerTest {
         assertThat(html)
                 .contains("content=\"Premier paragraphe.\"")
                 .doesNotContain("Second paragraphe")
-                .contains("<meta property=\"og:image\" content=\"https://site.athl-logistique.com/images/proj-1.png\">");
+                .contains("<meta property=\"og:image\" content=\"https://site.athl-logistique.com/images/proj-1.png\">")
+                .doesNotContain("og:image:width");
     }
 
     @Test

@@ -81,7 +81,17 @@ public class ShareController {
                                         String pageUrl, String type) {
         String t = escape(isBlank(title) ? SITE_NAME : title.trim());
         String d = escape(summarize(isBlank(description) ? DEFAULT_DESCRIPTION : description));
-        String img = escape(ogImage(image, baseUrl));
+        String imageUrl = ogImage(image, baseUrl);
+        String img = escape(imageUrl);
+        // Dimensions annoncées seulement quand on les connaît (image par défaut ou recadrée par
+        // Cloudinary) : WhatsApp en a parfois besoin pour afficher la vignette.
+        String imageSize = imageUrl.endsWith(DEFAULT_IMAGE_PATH) || imageUrl.contains(CLOUDINARY_OG_TRANSFORM)
+                ? """
+                <meta property="og:image:type" content="image/jpeg">
+                <meta property="og:image:width" content="1200">
+                <meta property="og:image:height" content="630">
+                """
+                : "";
         String url = escape(pageUrl);
         String body = """
                 <!doctype html>
@@ -100,7 +110,7 @@ public class ShareController {
                 <meta property="og:image" content="%3$s">
                 <meta property="og:image:secure_url" content="%3$s">
                 <meta property="og:image:alt" content="%1$s">
-                <meta name="twitter:card" content="summary_large_image">
+                %7$s<meta name="twitter:card" content="summary_large_image">
                 <meta name="twitter:title" content="%1$s">
                 <meta name="twitter:description" content="%2$s">
                 <meta name="twitter:image" content="%3$s">
@@ -111,7 +121,7 @@ public class ShareController {
                 <p><a href="%4$s">%4$s</a></p>
                 </body>
                 </html>
-                """.formatted(t, d, img, url, type, escape(SITE_NAME));
+                """.formatted(t, d, img, url, type, escape(SITE_NAME), imageSize);
         return ResponseEntity.ok().contentType(new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8)).body(body);
     }
 
