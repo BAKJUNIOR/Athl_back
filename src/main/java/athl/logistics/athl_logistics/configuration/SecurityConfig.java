@@ -108,6 +108,7 @@ public class SecurityConfig {
 
                                         .requestMatchers("/api/v1/dashboard/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
 
+                                        .requestMatchers(HttpMethod.GET, "/share/**").permitAll() // aperçus de partage pour les robots (voir ShareController)
                                         .requestMatchers("/ws/**").permitAll() // connexions WebSocket
                                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                         .anyRequest().authenticated()
