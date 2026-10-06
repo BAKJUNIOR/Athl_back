@@ -35,6 +35,10 @@ public class AboutWorkforceTab {
     @Column(name = "hero_image")
     private String heroImage;
 
+    /** Lien de la vidéo de l'onglet (YouTube, Vimeo ou fichier .mp4), lue dans une fenêtre sur le site ; null = pas de vidéo. */
+    @Column(name = "video_url", length = 1000)
+    private String videoUrl;
+
     @Column(name = "lead_fr", columnDefinition = "TEXT")
     private String leadFr;
     @Column(name = "lead_en", columnDefinition = "TEXT")

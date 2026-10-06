@@ -110,6 +110,7 @@ public class AboutPageServiceImpl implements AboutPageService {
             t.setTitleEn(d.getTitleEn());
             t.setImage(d.getImage());
             t.setHeroImage(d.getHeroImage());
+            t.setVideoUrl(d.getVideoUrl() == null || d.getVideoUrl().isBlank() ? null : d.getVideoUrl().trim());
             t.setLeadFr(d.getLeadFr());
             t.setLeadEn(d.getLeadEn());
             t.setBullet1Fr(d.getBullet1Fr());
