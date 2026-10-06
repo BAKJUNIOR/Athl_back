@@ -15,6 +15,7 @@ public class AboutWorkforceTabDTO {
     private String titleEn;
     private String image;
     private String heroImage;
+    private String videoUrl;
     private String leadFr;
     private String leadEn;
     private String bullet1Fr;
@@ -33,6 +34,7 @@ public class AboutWorkforceTabDTO {
         this.titleEn = entity.getTitleEn();
         this.image = entity.getImage();
         this.heroImage = entity.getHeroImage();
+        this.videoUrl = entity.getVideoUrl();
         this.leadFr = entity.getLeadFr();
         this.leadEn = entity.getLeadEn();
         this.bullet1Fr = entity.getBullet1Fr();
