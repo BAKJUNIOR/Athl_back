@@ -10,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.stream.Collectors;
 
@@ -46,6 +47,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseWrapper<String>> handleIllegalArgumentException(IllegalArgumentException ex) {
         log.debug("Invalid argument: {}", ex.getMessage());
         return ResponseEntity.badRequest().body(ResponseUtil.error(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
+    }
+
+    // Fichier au-delà de spring.servlet.multipart.max-file-size : rejeté avant même d'atteindre le contrôleur.
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ResponseWrapper<String>> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException ex) {
+        log.debug("Upload too large: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONTENT_TOO_LARGE)
+                .body(ResponseUtil.error(HttpStatus.CONTENT_TOO_LARGE.value(), "Fichier trop lourd. Taille maximum : 25 Mo."));
     }
 
     @ExceptionHandler(Exception.class)
