@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!-- En-têtes des pages de liste du site (voir PageHeader). Reprend les textes qui étaient
+         codés en dur dans public/i18n/fr.json|en.json du front.
+         La table est créée ici si elle n'existe pas encore : Liquibase s'exécute avant Hibernate
+         (ddl-auto=update), sans ça le premier déploiement ne pourrait pas insérer les lignes. -->
+
+    <changeSet id="create-page-headers" author="athl">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="page_headers"/></not>
+        </preConditions>
+        <createTable tableName="page_headers">
+            <column name="page_key" type="VARCHAR(40)"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="eyebrow_fr" type="VARCHAR(255)"/>
+            <column name="eyebrow_en" type="VARCHAR(255)"/>
+            <column name="title_fr" type="VARCHAR(255)"/>
+            <column name="title_en" type="VARCHAR(255)"/>
+            <column name="subtitle_fr" type="TEXT"/>
+            <column name="subtitle_en" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="seed-page-header-services" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="page_headers"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM page_headers WHERE page_key = 'services'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="page_headers">
+            <column name="page_key" value="services"/>
+            <column name="eyebrow_fr" value="Nos services"/>
+            <column name="eyebrow_en" value="Our services"/>
+            <column name="title_fr" value="Du chantier à la logistique"/>
+            <column name="title_en" value="From the construction site to logistics"/>
+            <column name="subtitle_fr" value="Trois métiers complémentaires pour mener vos projets de bout en bout, avec un seul interlocuteur."/>
+            <column name="subtitle_en" value="Three complementary trades to run your projects end to end, with a single point of contact."/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="seed-page-header-projects" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="page_headers"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM page_headers WHERE page_key = 'projects'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="page_headers">
+            <column name="page_key" value="projects"/>
+            <column name="eyebrow_fr" value="Projets"/>
+            <column name="eyebrow_en" value="Projects"/>
+            <column name="title_fr" value="Ce que nos équipes réalisent"/>
+            <column name="title_en" value="What our teams deliver"/>
+            <column name="subtitle_fr" value="Construction, import &amp; logistique, mobilité : un aperçu de nos projets livrés et en cours, par métier."/>
+            <column name="subtitle_en" value="Construction, import &amp; logistics, mobility: a look at our delivered and ongoing projects, by business line."/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="seed-page-header-news" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="page_headers"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM page_headers WHERE page_key = 'news'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="page_headers">
+            <column name="page_key" value="news"/>
+            <column name="eyebrow_fr" value="Actualités"/>
+            <column name="eyebrow_en" value="News"/>
+            <column name="title_fr" value="Ce qui se passe chez ATHL"/>
+            <column name="title_en" value="What's happening at ATHL"/>
+            <column name="subtitle_fr" value="Chantiers livrés, nouveaux partenariats, recrutements : les dernières nouvelles de nos équipes BTP, mobilité et import-logistique."/>
+            <column name="subtitle_en" value="Completed sites, new partnerships, hiring campaigns: the latest updates from our construction, mobility and import-logistics teams."/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="seed-page-header-team" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="page_headers"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM page_headers WHERE page_key = 'team'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="page_headers">
+            <column name="page_key" value="team"/>
+            <column name="eyebrow_fr" value="Équipe"/>
+            <column name="eyebrow_en" value="Team"/>
+            <column name="title_fr" value="Les visages derrière ATHL"/>
+            <column name="title_en" value="The faces behind ATHL"/>
+            <column name="subtitle_fr" value="Une direction et des équipes présentes sur le terrain, à l'écoute de chaque projet."/>
+            <column name="subtitle_en" value="A leadership and teams present in the field, listening to every project."/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="seed-page-header-careers" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="page_headers"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM page_headers WHERE page_key = 'careers'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="page_headers">
+            <column name="page_key" value="careers"/>
+            <column name="eyebrow_fr" value="Carrières"/>
+            <column name="eyebrow_en" value="Careers"/>
+            <column name="title_fr" value="Le talent est notre premier matériau"/>
+            <column name="title_en" value="Talent is our first material"/>
+            <column name="subtitle_fr" value="Africa &lt;strong&gt;Talent&lt;/strong&gt; Habitat &amp; Logistique : nous recrutons en continu sur nos chantiers, notre flotte et nos fonctions support."/>
+            <column name="subtitle_en" value="Africa &lt;strong&gt;Talent&lt;/strong&gt; Habitat &amp; Logistics: we recruit continuously across our sites, our fleet and our support functions."/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="seed-page-header-quote" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="page_headers"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM page_headers WHERE page_key = 'quote'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="page_headers">
+            <column name="page_key" value="quote"/>
+            <column name="eyebrow_fr" value="Devis gratuit"/>
+            <column name="eyebrow_en" value="Free quote"/>
+            <column name="title_fr" value="Demander un devis"/>
+            <column name="title_en" value="Request a quote"/>
+            <column name="subtitle_fr" value="Quatre champs suffisent. Nous vous rappelons sous 48 h ouvrées."/>
+            <column name="subtitle_en" value="Four fields are enough. We'll call you back within 48 business hours."/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="seed-page-header-search" author="athl">
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="page_headers"/>
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM page_headers WHERE page_key = 'search'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="page_headers">
+            <column name="page_key" value="search"/>
+            <column name="eyebrow_fr" value="Recherche"/>
+            <column name="eyebrow_en" value="Search"/>
+            <column name="title_fr" value="Rechercher sur le site"/>
+            <column name="title_en" value="Search the site"/>
+            <column name="subtitle_fr" value="Services, équipe, offres d'emploi et pages du site ATHL."/>
+            <column name="subtitle_en" value="Services, team, job openings and pages of the ATHL site."/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
