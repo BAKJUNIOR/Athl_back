@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <!-- Renommage des métiers : « Construction & rénovation » -> « Construction »,
+         « Mobilité, VTC & Livraison » -> « VTC & Livraison » (« Import & logistique » inchangé).
+         Les seeds 0003/0008/0010 ne sont PAS modifiés (Liquibase refuserait de démarrer : checksum).
+         Chaque UPDATE ne touche que les lignes qui portent encore l'ancien nom, pour ne pas écraser
+         une valeur déjà modifiée à la main dans le BO. Les slugs (URL /services/...) sont conservés
+         pour ne pas casser les liens déjà partagés. -->
+
+    <changeSet id="rename-service-construction" author="athl">
+        <preConditions onFail="MARK_RAN"><tableExists tableName="services"/></preConditions>
+        <sql>
+            UPDATE services SET title_fr = 'Construction' WHERE title_fr = 'Construction &amp; rénovation';
+            UPDATE services SET title_en = 'Construction' WHERE title_en IN ('Construction &amp; Renovation', 'Construction &amp; renovation');
+        </sql>
+    </changeSet>
+
+    <changeSet id="rename-service-vtc-livraison" author="athl">
+        <preConditions onFail="MARK_RAN"><tableExists tableName="services"/></preConditions>
+        <sql>
+            UPDATE services SET title_fr = 'VTC &amp; Livraison' WHERE title_fr = 'Mobilité, VTC &amp; Livraison';
+            UPDATE services SET title_en = 'Ride-hailing &amp; Delivery' WHERE title_en IN ('Mobility, Ride-hailing &amp; Delivery', 'Mobility, ride-hailing &amp; delivery');
+            UPDATE services SET short_title_fr = 'VTC &amp; Livraison' WHERE short_title_fr = 'Mobilité';
+            UPDATE services SET short_title_en = 'Ride-hailing &amp; Delivery' WHERE short_title_en = 'Mobility';
+        </sql>
+    </changeSet>
+
+    <changeSet id="rename-workforce-tabs" author="athl">
+        <preConditions onFail="MARK_RAN"><tableExists tableName="about_workforce_tabs"/></preConditions>
+        <sql>
+            UPDATE about_workforce_tabs SET title_fr = 'Construction' WHERE title_fr = 'Construction &amp; rénovation';
+            UPDATE about_workforce_tabs SET title_en = 'Construction' WHERE title_en IN ('Construction &amp; renovation', 'Construction &amp; Renovation');
+            UPDATE about_workforce_tabs SET title_fr = 'VTC &amp; Livraison' WHERE title_fr = 'Mobilité, VTC &amp; Livraison';
+            UPDATE about_workforce_tabs SET title_en = 'Ride-hailing &amp; Delivery' WHERE title_en IN ('Mobility, ride-hailing &amp; delivery', 'Mobility, Ride-hailing &amp; Delivery');
+        </sql>
+    </changeSet>
+
+    <changeSet id="rename-news-category-vtc" author="athl">
+        <preConditions onFail="MARK_RAN"><tableExists tableName="news_articles"/></preConditions>
+        <sql>
+            UPDATE news_articles SET category_fr = 'VTC &amp; Livraison' WHERE category_fr = 'Mobilité &amp; VTC';
+            UPDATE news_articles SET category_en = 'Ride-hailing &amp; Delivery' WHERE category_en = 'Mobility &amp; ride-hailing';
+        </sql>
+    </changeSet>
+
+    <!-- Textes d'origine (seeds) qui énuméraient les métiers : remplacés seulement s'ils n'ont
+         pas été modifiés depuis dans le BO. -->
+    <changeSet id="rename-services-footer-about" author="athl">
+        <preConditions onFail="MARK_RAN"><tableExists tableName="site_contact"/></preConditions>
+        <sql>
+            UPDATE site_contact SET footer_about_fr = 'Africa Talent Habitat &amp; Logistique — construction, VTC &amp; livraison et importation de matériaux, portées par des équipes qualifiées.'
+                WHERE footer_about_fr = 'Africa Talent Habitat &amp; Logistique — construction, rénovation, mobilité et importation de matériaux, portées par des équipes qualifiées.';
+            UPDATE site_contact SET footer_about_en = 'Africa Talent Habitat &amp; Logistics — construction, ride-hailing &amp; delivery and import of materials, delivered by skilled teams.'
+                WHERE footer_about_en = 'Africa Talent Habitat &amp; Logistics — construction, renovation, mobility and import of materials, delivered by skilled teams.';
+        </sql>
+    </changeSet>
+
+    <changeSet id="rename-services-page-headers" author="athl">
+        <preConditions onFail="MARK_RAN"><tableExists tableName="page_headers"/></preConditions>
+        <sql>
+            UPDATE page_headers SET subtitle_fr = 'Chantiers livrés, nouveaux partenariats, recrutements : les dernières nouvelles de nos équipes construction, VTC &amp; livraison et import-logistique.'
+                WHERE page_key = 'news' AND subtitle_fr = 'Chantiers livrés, nouveaux partenariats, recrutements : les dernières nouvelles de nos équipes BTP, mobilité et import-logistique.';
+            UPDATE page_headers SET subtitle_en = 'Completed sites, new partnerships, hiring campaigns: the latest updates from our construction, ride-hailing &amp; delivery and import-logistics teams.'
+                WHERE page_key = 'news' AND subtitle_en = 'Completed sites, new partnerships, hiring campaigns: the latest updates from our construction, mobility and import-logistics teams.';
+            UPDATE page_headers SET subtitle_fr = 'Construction, VTC &amp; livraison, import &amp; logistique : un aperçu de nos projets livrés et en cours, par métier.'
+                WHERE page_key = 'projects' AND subtitle_fr = 'Construction, import &amp; logistique, mobilité : un aperçu de nos projets livrés et en cours, par métier.';
+            UPDATE page_headers SET subtitle_en = 'Construction, ride-hailing &amp; delivery, import &amp; logistics: a look at our delivered and ongoing projects, by business line.'
+                WHERE page_key = 'projects' AND subtitle_en = 'Construction, import &amp; logistics, mobility: a look at our delivered and ongoing projects, by business line.';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
