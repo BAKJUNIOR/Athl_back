@@ -39,7 +39,7 @@ class ShareControllerTest {
     @Test
     void newsUsesExcerptAndCloudinaryCroppedImage() {
         NewsArticleDTO article = new NewsArticleDTO();
-        article.setTitleFr("ATHL renforce sa flotte Mobilité & VTC");
+        article.setTitleFr("ATHL renforce sa flotte VTC & Livraison");
         article.setExcerptFr("Face à la demande croissante de nos clients.");
         article.setBodyFr("Corps de l'article.");
         article.setImage("https://res.cloudinary.com/demo/image/upload/v1/news/vtc.jpg");
@@ -48,7 +48,7 @@ class ShareControllerTest {
         String html = controller.news("flotte-mobilite-vtc", requestFrom("site.athl-logistique.com")).getBody();
 
         assertThat(html)
-                .contains("<meta property=\"og:title\" content=\"ATHL renforce sa flotte Mobilité &amp; VTC\">")
+                .contains("<meta property=\"og:title\" content=\"ATHL renforce sa flotte VTC &amp; Livraison\">")
                 .contains("<meta property=\"og:description\" content=\"Face à la demande croissante de nos clients.\">")
                 .contains("<meta property=\"og:image\" content=\"https://res.cloudinary.com/demo/image/upload/c_fill,g_auto,w_1200,h_630,q_auto,f_jpg/v1/news/vtc.jpg\">")
                 .contains("<meta property=\"og:url\" content=\"https://site.athl-logistique.com/actualites/flotte-mobilite-vtc\">")

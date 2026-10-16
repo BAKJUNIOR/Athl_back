@@ -45,7 +45,7 @@ public class HomePageContent {
     @OrderColumn(name = "sort_order")
     private List<String> heroImages = new ArrayList<>();
 
-    // ----- Carte pilier "Construction & rénovation" -----
+    // ----- Carte pilier "Construction" -----
     @Column(name = "pillar_construction_lead_fr", columnDefinition = "TEXT")
     private String pillarConstructionLeadFr;
     @Column(name = "pillar_construction_lead_en", columnDefinition = "TEXT")
@@ -53,7 +53,7 @@ public class HomePageContent {
     @Column(name = "pillar_construction_image")
     private String pillarConstructionImage;
 
-    // ----- Carte pilier "Mobilité, VTC & Livraison" -----
+    // ----- Carte pilier "VTC & Livraison" -----
     @Column(name = "pillar_mobility_lead_fr", columnDefinition = "TEXT")
     private String pillarMobilityLeadFr;
     @Column(name = "pillar_mobility_lead_en", columnDefinition = "TEXT")
